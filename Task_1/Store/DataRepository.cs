@@ -9,6 +9,11 @@ namespace Store
     {
         private readonly DataContext _dataContext = new DataContext();
 
+        public DataRepository(IDataFiller dataFiller)
+        {
+            dataFiller.Fill(_dataContext);
+        }
+
         public void AddClient(Client client)
         {
             if (_dataContext.Clients.Any(c => c.Email.Equals(client.Email)))
