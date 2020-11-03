@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Store
 {
@@ -12,35 +11,36 @@ namespace Store
 
         public void AddClient(Client client)
         {
-            if(_dataContext.Clients.Any(c => c.Email == client.Email))
+            if (_dataContext.Clients.Any(c => c.Email.Equals(client.Email)))
             {
-                throw new ArgumentException($"Client with email {client.Email} already exists!");
+                throw new ArgumentException($"Client '{client.Email}' already exists!");
             }
+            _dataContext.Clients.Add(client);
         }
 
         public void AddFacture(Facture facture)
         {
-            if(GetFacture(facture.Id) != null)
+            if (_dataContext.Factures.Any(f => f.Id.Equals(facture.Id)))
             {
-                throw new ArgumentException($"Facture with guid {facture.Id} already exists!");
+                throw new ArgumentException($"Facture '{facture.Id}' already exists!");
             }
             _dataContext.Factures.Add(facture);
         }
 
         public void AddOffer(Offer offer)
         {
-            if(GetOffer(offer.Id) != null)
+            if (_dataContext.Offers.Any(o => o.Id.Equals(offer.Id)))
             {
-                throw new ArgumentException($"Offer with guid {offer.Id} already exists!");
+                throw new ArgumentException($"Offer '{offer.Id}' already exists!");
             }
             _dataContext.Offers.Add(offer);
         }
 
         public void AddProduct(Product product)
         {
-            if (GetProduct(product.Id) != null)
+            if (_dataContext.Products.ContainsKey(product.Id))
             {
-                throw new ArgumentException($"Product with key '${product.Id}' already exists!");
+                throw new ArgumentException($"Product '${product.Id}' already exists!");
             }
             _dataContext.Products.Add(product.Id, product);
         }
@@ -49,15 +49,15 @@ namespace Store
         {
             if (!_dataContext.Clients.Remove(client))
             {
-                throw new ArgumentException($"Client does not exist!");
+                throw new ArgumentException($"Client '{client.Email}' does not exist!");
             }
         }
 
         public void DeleteFacture(Facture facture)
         {
-            if(!_dataContext.Factures.Remove(facture))
+            if (!_dataContext.Factures.Remove(facture))
             {
-                throw new ArgumentException($"Facture does not exist!");
+                throw new ArgumentException($"Facture '{facture.Id}' does not exist!");
             }
         }
 
@@ -65,17 +65,16 @@ namespace Store
         {
             if (!_dataContext.Offers.Remove(offer))
             {
-                throw new ArgumentException($"Offer does not exist!");
+                throw new ArgumentException($"Offer '{offer.Id}' does not exist!");
             }
         }
 
         public void DeleteProduct(Product product)
         {
-            if (!_dataContext.Products.ContainsKey(product.Id))
+            if (!_dataContext.Products.Remove(product.Id))
             {
-                throw new ArgumentException($"Product does not exist!");
+                throw new ArgumentException($"Product '{product.Id}' does not exist!");
             }
-            _dataContext.Products.Remove(product.Id);
         }
 
         public IEnumerable<Client> GetAllClients()
@@ -100,42 +99,35 @@ namespace Store
 
         public Client GetClient(string email)
         {
-            return _dataContext.Clients.FirstOrDefault(c => c.Email == email);
+            return _dataContext.Clients.FirstOrDefault(c => c.Email.Equals(email));
         }
 
         public Facture GetFacture(Guid factureId)
         {
-            return _dataContext.Factures.FirstOrDefault(f => f.Id == factureId);
+            return _dataContext.Factures.FirstOrDefault(f => f.Id.Equals(factureId));
         }
 
         public Offer GetOffer(Guid offerId)
         {
-            return _dataContext.Offers.FirstOrDefault(o => o.Id == offerId);
+            return _dataContext.Offers.FirstOrDefault(o => o.Id.Equals(offerId));
         }
 
         public Product GetProduct(Guid productId)
         {
-            try
-            {
-                return _dataContext.Products[productId];
-            }
-            catch
-            {
-                return null;
-            }
+            return _dataContext.Products.FirstOrDefault(p => p.Key.Equals(productId)).Value;
         }
 
         public void UpdateClient(string email, Client client)
         {
-            if(email != client.Email)
+            if (!email.Equals(client.Email))
             {
-                throw new ArgumentException("Can't change client's email!");
+                throw new ArgumentException($"Cannot change email '{email}' for client '{client.Email}'!");
             }
 
-            int id = _dataContext.Clients.FindIndex(c => c.Email == email);
-            if(id == -1)
+            int id = _dataContext.Clients.FindIndex(c => c.Email.Equals(email));
+            if (id == -1)
             {
-                throw new ArgumentException($"Client with email {email} does not exist!");
+                throw new ArgumentException($"Client '{email}' does not exist!");
             }
 
             _dataContext.Clients[id] = client;
@@ -143,22 +135,22 @@ namespace Store
 
         public void UpdateFacture(Guid factureId, Facture facture)
         {
-            Facture presentFacture = _dataContext.Factures.FirstOrDefault(f => f.Id == facture.Id);
-            if(presentFacture == null)
+            Facture curFacture = _dataContext.Factures.FirstOrDefault(f => f.Id.Equals(facture.Id));
+            if (curFacture == null)
             {
-                throw new ArgumentException("Facture does not exist!");
+                throw new ArgumentException($"Facture '{factureId}' does not exist!");
             }
 
-            int id = _dataContext.Factures.IndexOf(presentFacture);
+            int id = _dataContext.Factures.IndexOf(curFacture);
             _dataContext.Factures[id] = facture;
         }
 
         public void UpdateOffer(Guid offerId, Offer offer)
         {
-            int id = _dataContext.Offers.FindIndex(o => o.Id == offer.Id);
-            if(id == -1)
+            int id = _dataContext.Offers.FindIndex(o => o.Id.Equals(offer.Id));
+            if (id == -1)
             {
-                throw new ArgumentException("Offer does not exist!");
+                throw new ArgumentException($"Offer '{offerId}' does not exist!");
             }
 
             _dataContext.Offers[id] = offer;
@@ -166,14 +158,14 @@ namespace Store
 
         public void UpdateProduct(Guid productId, Product product)
         {
-            if(productId != product.Id)
+            if (!productId.Equals(product.Id))
             {
-                throw new ArgumentException("Can't change product's Guid!");
+                throw new ArgumentException($"Cannot change id '{productId}' for product '{product.Id}'!");
             }
 
-            if(_dataContext.Products.ContainsKey(productId))
+            if (!_dataContext.Products.ContainsKey(productId))
             {
-                throw new ArgumentException($"Product with key '${productId}' does not exist!");
+                throw new ArgumentException($"Product '{productId}' does not exist!");
             }
 
             _dataContext.Products[productId] = product;
