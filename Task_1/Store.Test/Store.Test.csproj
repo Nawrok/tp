@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="DataRepositoryTest.cs" />
     <Compile Include="DataServiceTest.cs" />
+    <Compile Include="FileDataFiller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomDataFiller.cs" />
   </ItemGroup>

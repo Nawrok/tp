@@ -1,6 +1,6 @@
 ﻿namespace Store.Test
 {
-    class RandomDataFiller : IDataFiller
+    class FileDataFiller : IDataFiller
     {
         public void Fill(DataContext context)
         {
