@@ -8,8 +8,8 @@
     <ProjectGuid>{06EC9B5D-3B77-45F9-83FC-C75B1F70E443}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Store.Test</RootNamespace>
-    <AssemblyName>Store.Test</AssemblyName>
+    <RootNamespace>Store.Tests</RootNamespace>
+    <AssemblyName>Store.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -51,9 +51,9 @@
   <ItemGroup>
     <Compile Include="DataRepositoryTest.cs" />
     <Compile Include="DataServiceTest.cs" />
-    <Compile Include="FileDataFiller.cs" />
+    <Compile Include="Filler\ConstDataFiller.cs" />
+    <Compile Include="Filler\RandomDataFiller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RandomDataFiller.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,14 +1,9 @@
 ﻿using System;
 
-namespace Store.Entities
+namespace Store.DAL.Model
 {
     public class Facture
     {
-        public Guid Id { get; set; }
-        public Client Client { get; set; }
-        public Offer Offer { get; set; }
-        public DateTimeOffset PurchaseDate { get; set; }
-
         public Facture(Guid id, Client client, Offer offer, DateTimeOffset purchaseDate)
         {
             Id = id;
@@ -16,6 +11,11 @@ namespace Store.Entities
             Offer = offer;
             PurchaseDate = purchaseDate;
         }
+
+        public Guid Id { get; set; }
+        public Client Client { get; set; }
+        public Offer Offer { get; set; }
+        public DateTimeOffset PurchaseDate { get; set; }
 
         public override string ToString()
         {

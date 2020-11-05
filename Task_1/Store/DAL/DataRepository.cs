@@ -1,9 +1,9 @@
-﻿using Store.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Store.DAL.Model;
 
-namespace Store
+namespace Store.DAL
 {
     public class DataRepository : IDataRepository
     {
@@ -20,6 +20,7 @@ namespace Store
             {
                 throw new ArgumentException($"Client '{client.Email}' already exists!");
             }
+
             _dataContext.Clients.Add(client);
         }
 
@@ -29,6 +30,7 @@ namespace Store
             {
                 throw new ArgumentException($"Facture '{facture.Id}' already exists!");
             }
+
             _dataContext.Factures.Add(facture);
         }
 
@@ -38,6 +40,7 @@ namespace Store
             {
                 throw new ArgumentException($"Offer '{offer.Id}' already exists!");
             }
+
             _dataContext.Offers.Add(offer);
         }
 
@@ -47,6 +50,7 @@ namespace Store
             {
                 throw new ArgumentException($"Product '${product.Id}' already exists!");
             }
+
             _dataContext.Products.Add(product.Id, product);
         }
 
@@ -129,7 +133,7 @@ namespace Store
                 throw new ArgumentException($"Cannot change email '{email}' for client '{client.Email}'!");
             }
 
-            int id = _dataContext.Clients.FindIndex(c => c.Email.Equals(email));
+            var id = _dataContext.Clients.FindIndex(c => c.Email.Equals(email));
             if (id == -1)
             {
                 throw new ArgumentException($"Client '{email}' does not exist!");
@@ -140,19 +144,19 @@ namespace Store
 
         public void UpdateFacture(Guid factureId, Facture facture)
         {
-            Facture curFacture = _dataContext.Factures.FirstOrDefault(f => f.Id.Equals(facture.Id));
+            var curFacture = _dataContext.Factures.FirstOrDefault(f => f.Id.Equals(facture.Id));
             if (curFacture == null)
             {
                 throw new ArgumentException($"Facture '{factureId}' does not exist!");
             }
 
-            int id = _dataContext.Factures.IndexOf(curFacture);
+            var id = _dataContext.Factures.IndexOf(curFacture);
             _dataContext.Factures[id] = facture;
         }
 
         public void UpdateOffer(Guid offerId, Offer offer)
         {
-            int id = _dataContext.Offers.FindIndex(o => o.Id.Equals(offer.Id));
+            var id = _dataContext.Offers.FindIndex(o => o.Id.Equals(offer.Id));
             if (id == -1)
             {
                 throw new ArgumentException($"Offer '{offerId}' does not exist!");

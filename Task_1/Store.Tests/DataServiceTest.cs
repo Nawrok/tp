@@ -1,15 +1,19 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Store.BLL;
+using Store.DAL;
+using Store.Tests.Filler;
 
-namespace Store.Test
+namespace Store.Tests
 {
     [TestClass]
     public class DataServiceTest
     {
-        DataService dataService;
+        private DataService _dataService;
+
         [TestInitialize]
         public void TestInitialize()
         {
-            dataService = new DataService(new DataRepository(new RandomDataFiller()));
+            _dataService = new DataService(new DataRepository(new RandomDataFiller()));
         }
 
         [TestMethod]

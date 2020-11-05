@@ -1,8 +1,8 @@
-﻿using Store.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Store.DAL.Model;
 
-namespace Store
+namespace Store.DAL
 {
     public interface IDataRepository
     {

@@ -1,12 +1,7 @@
-﻿namespace Store.Entities
+﻿namespace Store.DAL.Model
 {
     public class Client
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string Email { get; set; }
-        public Address Address { get; set; }
-
         public Client(string name, string surname, string email, Address address)
         {
             Name = name;
@@ -14,6 +9,11 @@
             Email = email;
             Address = address;
         }
+
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Email { get; set; }
+        public Address Address { get; set; }
 
         public override string ToString()
         {
@@ -23,14 +23,14 @@
 
     public class Address
     {
-        public string Street { get; set; }
-        public string City { get; set; }
-
         public Address(string street, string city)
         {
             Street = street;
             City = city;
         }
+
+        public string Street { get; set; }
+        public string City { get; set; }
 
         public override string ToString()
         {
