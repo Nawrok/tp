@@ -20,11 +20,11 @@ namespace Store.DAL
         IEnumerable<Product> GetAllProducts();
         Client GetClient(string email);
         Event GetEvent(Guid eventId);
-        Offer GetOffer(Guid offerId);
+        Offer GetOffer(Product product);
         Product GetProduct(Guid productId);
         void UpdateClient(string email, Client client);
         void UpdateEvent(Guid eventId, Event evt);
-        void UpdateOffer(Guid offerId, Offer offer);
+        void UpdateOffer(Guid productId, Offer offer);
         void UpdateProduct(Guid productId, Product product);
     }
 }

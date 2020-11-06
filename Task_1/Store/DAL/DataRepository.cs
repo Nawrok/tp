@@ -36,9 +36,9 @@ namespace Store.DAL
 
         public void AddOffer(Offer offer)
         {
-            if (_dataContext.Offers.Any(o => o.Id.Equals(offer.Id)))
+            if (_dataContext.Offers.Any(o => o.Product.Id.Equals(offer.Product.Id)))
             {
-                throw new ArgumentException($"Offer '{offer.Id}' already exists!");
+                throw new ArgumentException($"Offer for product '{offer.Product.Name}' already exists!");
             }
 
             _dataContext.Offers.Add(offer);
@@ -74,7 +74,7 @@ namespace Store.DAL
         {
             if (!_dataContext.Offers.Remove(offer))
             {
-                throw new ArgumentException($"Offer '{offer.Id}' does not exist!");
+                throw new ArgumentException($"Offer for product '{offer.Product.Name}' does not exist!");
             }
         }
 
@@ -116,9 +116,9 @@ namespace Store.DAL
             return _dataContext.Events.FirstOrDefault(e => e.Id.Equals(eventId));
         }
 
-        public Offer GetOffer(Guid offerId)
+        public Offer GetOffer(Product product)
         {
-            return _dataContext.Offers.FirstOrDefault(o => o.Id.Equals(offerId));
+            return _dataContext.Offers.FirstOrDefault(o => o.Product.Id.Equals(product.Id));
         }
 
         public Product GetProduct(Guid productId)
@@ -144,7 +144,7 @@ namespace Store.DAL
 
         public void UpdateEvent(Guid eventId, Event evt)
         {
-            var curEvent = _dataContext.Events.FirstOrDefault(e => e.Id.Equals(evt.Id));
+            var curEvent = _dataContext.Events.FirstOrDefault(e => e.Id.Equals(eventId));
             if (curEvent == null)
             {
                 throw new ArgumentException($"{evt.GetType().Name} '{eventId}' does not exist!");
@@ -154,12 +154,12 @@ namespace Store.DAL
             _dataContext.Events[id] = evt;
         }
 
-        public void UpdateOffer(Guid offerId, Offer offer)
+        public void UpdateOffer(Guid productId, Offer offer)
         {
-            var id = _dataContext.Offers.FindIndex(o => o.Id.Equals(offer.Id));
+            var id = _dataContext.Offers.FindIndex(o => o.Product.Id.Equals(productId));
             if (id == -1)
             {
-                throw new ArgumentException($"Offer '{offerId}' does not exist!");
+                throw new ArgumentException($"Offer for product '{offer.Product.Name}' does not exist!");
             }
 
             _dataContext.Offers[id] = offer;

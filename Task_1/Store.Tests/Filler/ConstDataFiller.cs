@@ -20,10 +20,10 @@ namespace Store.Tests.Filler
             repository.AddProduct(p2);
             repository.AddProduct(p3);
 
-            var o1 = new Offer(Guid.NewGuid(), p1, 14.50m, 0.05m, 40);
-            var o2 = new Offer(Guid.NewGuid(), p2, 450.00m, 0.23m, 5);
-            var o3 = new Offer(Guid.NewGuid(), p3, 1500.00m, 0.23m, 2);
-            var o4 = new Offer(Guid.NewGuid(), p1, 9.99m, 0.05m, 20);
+            var o1 = new Offer(p1, 14.50m, 0.05m, 40);
+            var o2 = new Offer(p2, 450.00m, 0.23m, 5);
+            var o3 = new Offer(p3, 1500.00m, 0.23m, 2);
+            var o4 = new Offer(p1, 9.99m, 0.05m, 20);
             repository.AddOffer(o1);
             repository.AddOffer(o2);
             repository.AddOffer(o3);

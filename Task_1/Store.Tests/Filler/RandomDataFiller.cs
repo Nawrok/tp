@@ -41,7 +41,6 @@ namespace Store.Tests.Filler
                 repository.AddProduct(product);
 
                 var offer = new Offer(
-                    Guid.NewGuid(),
                     product,
                     new decimal(Random.NextDouble()) * 14.123M,
                     new decimal(Random.NextDouble()),

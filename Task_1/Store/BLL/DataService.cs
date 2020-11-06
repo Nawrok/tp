@@ -19,19 +19,18 @@ namespace Store.BLL
         {
             if (offer.ProductsInStock == 0)
             {
-                throw new InvalidOperationException("Currently, there is no products in stock, we are sorry!");
+                throw new InvalidOperationException("Currently, there are no products in stock, we are sorry!");
             }
 
             if (offer.ProductsInStock - productCount < 0)
             {
-                //TODO MESSAGE - CANNOT BUY MORE PRODUCTS THAN IN STOCK
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("You want to buy more products than we have in stock!");
             }
 
             var facture = new Facture(Guid.NewGuid(), client, offer, productCount, DateTimeOffset.Now);
 
             offer.ProductsInStock -= productCount;
-            _dataRepository.UpdateOffer(offer.Id, offer);
+            _dataRepository.UpdateOffer(offer.Product.Id, offer);
             _dataRepository.AddEvent(facture);
 
             return facture;
@@ -42,13 +41,12 @@ namespace Store.BLL
             var offer = GetOffers().FirstOrDefault(o => o.Product.Id.Equals(product.Id));
             if (offer == null)
             {
-                //TODO MESSAGE - NO OFFER FOR THIS PRODUCT
-                throw new ArgumentException();
+                throw new ArgumentException("No offer is available for this product!");
             }
 
             offer.ProductsInStock = productsInStock;
 
-            _dataRepository.UpdateOffer(offer.Id, offer);
+            _dataRepository.UpdateOffer(offer.Product.Id, offer);
         }
 
         public IEnumerable<Event> GetFacturesForClient(Client client)

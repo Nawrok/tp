@@ -4,16 +4,14 @@ namespace Store.DAL.Model
 {
     public class Offer
     {
-        public Offer(Guid id, Product product, decimal netPrice, decimal tax, int productsInStock)
+        public Offer(Product product, decimal netPrice, decimal tax, int productsInStock)
         {
-            Id = id;
             Product = product;
             NetPrice = netPrice;
             Tax = tax;
             ProductsInStock = productsInStock;
         }
 
-        public Guid Id { get; set; }
         public Product Product { get; set; }
         public decimal NetPrice { get; set; }
         public decimal Tax { get; set; }
@@ -21,7 +19,7 @@ namespace Store.DAL.Model
 
         public override string ToString()
         {
-            return $"Id: {Id} | Product: {Product.Id} | NetPrice: {NetPrice} | Tax: {Tax} | ProductsInStock: {ProductsInStock}";
+            return $"Product: {Product.Id} | NetPrice: {NetPrice} | Tax: {Tax} | ProductsInStock: {ProductsInStock}";
         }
     }
 }
