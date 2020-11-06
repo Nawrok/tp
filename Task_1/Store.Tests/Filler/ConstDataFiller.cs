@@ -1,6 +1,6 @@
-﻿using Store.DAL;
+﻿using System;
+using Store.DAL;
 using Store.DAL.Model;
-using System;
 
 namespace Store.Tests.Filler
 {
@@ -29,9 +29,9 @@ namespace Store.Tests.Filler
             repository.AddOffer(o3);
             repository.AddOffer(o4);
 
-            var e1 = new Facture(Guid.NewGuid(), c2, o1, DateTimeOffset.Now.AddDays(-7));
-            var e2 = new Facture(Guid.NewGuid(), c1, o2, DateTimeOffset.Now);
-            var e3 = new Facture(Guid.NewGuid(), c1, o4, DateTimeOffset.Now);
+            var e1 = new Facture(Guid.NewGuid(), c2, o1, 5, DateTimeOffset.Now.AddDays(-7));
+            var e2 = new Facture(Guid.NewGuid(), c1, o2, 1, DateTimeOffset.Now);
+            var e3 = new Facture(Guid.NewGuid(), c1, o4, 3, DateTimeOffset.Now);
             repository.AddEvent(e1);
             repository.AddEvent(e2);
             repository.AddEvent(e3);

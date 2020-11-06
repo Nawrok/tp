@@ -4,7 +4,8 @@ namespace Store.DAL.Model
 {
     public class Return : Event
     {
-        public Return(Guid id, Client client, Offer offer, DateTimeOffset purchaseDate, DateTimeOffset returnDate) : base(id, client, offer, purchaseDate)
+        public Return(Guid id, Client client, Offer offer, int productCount, DateTimeOffset purchaseDate,
+            DateTimeOffset returnDate) : base(id, client, offer, productCount, purchaseDate)
         {
             ReturnDate = returnDate;
         }

@@ -15,34 +15,45 @@ namespace Store.BLL
             _dataRepository = dataRepository;
         }
 
-        public Event BuyProduct(Client client, Offer offer)
+        public Facture BuyProducts(Client client, Offer offer, int productCount)
         {
-            var facture = new Facture(Guid.NewGuid(), client, offer, DateTimeOffset.Now);
-            if (offer.Count <= 1)
+            if (offer.ProductsInStock == 0)
             {
-                throw new InvalidOperationException("Currently, there is no product in stock, we are sorry!");
+                throw new InvalidOperationException("Currently, there is no products in stock, we are sorry!");
             }
 
-            offer.Count -= 1;
+            if (offer.ProductsInStock - productCount < 0)
+            {
+                //TODO MESSAGE - CANNOT BUY MORE PRODUCTS THAN IN STOCK
+                throw new InvalidOperationException();
+            }
+
+            var facture = new Facture(Guid.NewGuid(), client, offer, productCount, DateTimeOffset.Now);
+
+            offer.ProductsInStock -= productCount;
             _dataRepository.UpdateOffer(offer.Id, offer);
             _dataRepository.AddEvent(facture);
 
             return facture;
         }
 
-        public void UpdateOfferState(Product product, int count)
+        public void UpdateOfferState(Product product, int productsInStock)
         {
             var offer = GetOffers().FirstOrDefault(o => o.Product.Id.Equals(product.Id));
-            offer.Count = count;
+            if (offer == null)
+            {
+                //TODO MESSAGE - NO OFFER FOR THIS PRODUCT
+                throw new ArgumentException();
+            }
+
+            offer.ProductsInStock = productsInStock;
 
             _dataRepository.UpdateOffer(offer.Id, offer);
         }
 
         public IEnumerable<Event> GetFacturesForClient(Client client)
         {
-            var factures = GetFactures();
-
-            return factures.Where(f => f.Client.Email == client.Email);
+            return GetFactures().Where(f => f.Client.Email.Equals(client.Email));
         }
 
         public IEnumerable<Client> GetClientsFromCity(string city)
@@ -52,10 +63,7 @@ namespace Store.BLL
 
         public IEnumerable<Product> GetBoughtProducts(Client client)
         {
-            var factures = GetFacturesForClient(client);
-            var products = factures.Select(f => f.Offer.Product);
-
-            return products;
+            return GetFacturesForClient(client).Select(f => f.Offer.Product);
         }
 
         public IEnumerable<Product> GetTheSameTypeProducts(string type)
@@ -63,7 +71,7 @@ namespace Store.BLL
             return GetProducts().Where(p => p.Type.Equals(type));
         }
 
-        public IEnumerable<Event> GetFacturesForProduct(Product product)
+        public IEnumerable<Facture> GetFacturesForProduct(Product product)
         {
             return GetFactures().Where(f => f.Offer.Product.Id.Equals(product.Id));
         }
@@ -75,23 +83,15 @@ namespace Store.BLL
 
         public IEnumerable<Client> GetClientsForProduct(Product product)
         {
-            var factures = GetFacturesForProduct(product);
-            var clients = new Dictionary<string, Client>();
-            foreach (var f in factures)
-            {
-                clients[f.Client.Email] = f.Client;
-            }
-
-            return clients.Values;
+            var clientEmails = GetFacturesForProduct(product).Select(f => f.Client.Email).Distinct();
+            return clientEmails.Select(email => GetClients().First(c => c.Email.Equals(email)));
         }
 
         public ValueTuple<int, decimal> GetProductSales(Product product)
         {
-            var productFactures = GetFactures().Where(f => f.Offer.Product.Id.Equals(product.Id));
-            var count = productFactures.Count();
-            var summedUpValue = productFactures.Sum(f => f.Offer.NetPrice);
-
-            return (count, summedUpValue);
+            var productCount = GetFacturesForProduct(product).Sum(f => f.ProductCount);
+            var totalSales = GetFacturesForProduct(product).Sum(f => f.GrossPrice);
+            return (productCount, totalSales);
         }
 
         public void AddClient(Client client)
@@ -109,9 +109,9 @@ namespace Store.BLL
             _dataRepository.AddProduct(product);
         }
 
-        public void DeleteFacture(Event facture)
+        public void DeleteEvent(Event evt)
         {
-            _dataRepository.DeleteEvent(facture);
+            _dataRepository.DeleteEvent(evt);
         }
 
         public void DeleteClient(Client client)
@@ -134,7 +134,17 @@ namespace Store.BLL
             return _dataRepository.GetAllClients();
         }
 
-        public IEnumerable<Event> GetFactures()
+        public IEnumerable<Facture> GetFactures()
+        {
+            return _dataRepository.GetAllEvents().Where(e => e.GetType().IsInstanceOfType(typeof(Facture))).Cast<Facture>();
+        }
+
+        public IEnumerable<Return> GetReturns()
+        {
+            return _dataRepository.GetAllEvents().Where(e => e.GetType().IsInstanceOfType(typeof(Return))).Cast<Return>();
+        }
+
+        public IEnumerable<Event> GetEvents()
         {
             return _dataRepository.GetAllEvents();
         }
@@ -149,9 +159,9 @@ namespace Store.BLL
             return _dataRepository.GetAllProducts();
         }
 
-        public void UpdateFacture(Guid factureId, Event facture)
+        public void UpdateEvent(Guid eventId, Event evt)
         {
-            _dataRepository.UpdateEvent(factureId, facture);
+            _dataRepository.UpdateEvent(eventId, evt);
         }
 
         public void UpdateClient(string email, Client client)
