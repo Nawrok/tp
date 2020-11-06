@@ -47,7 +47,7 @@ namespace Store.BLL
 
         public IEnumerable<Client> GetClientsFromCity(string city)
         {
-            return GetClients().Where(c => c.Address.City.Equals(city));
+            return GetClients().Where(c => c.City.Equals(city));
         }
 
         public IEnumerable<Product> GetBoughtProducts(Client client)
