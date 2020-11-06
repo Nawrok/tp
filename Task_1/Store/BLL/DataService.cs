@@ -15,7 +15,7 @@ namespace Store.BLL
             _dataRepository = dataRepository;
         }
 
-        public Facture BuyProduct(Client client, Offer offer)
+        public Event BuyProduct(Client client, Offer offer)
         {
             var facture = new Facture(Guid.NewGuid(), client, offer, DateTimeOffset.Now);
             if (offer.Count <= 1)
@@ -25,7 +25,7 @@ namespace Store.BLL
 
             offer.Count -= 1;
             _dataRepository.UpdateOffer(offer.Id, offer);
-            _dataRepository.AddFacture(facture);
+            _dataRepository.AddEvent(facture);
 
             return facture;
         }
@@ -38,7 +38,7 @@ namespace Store.BLL
             _dataRepository.UpdateOffer(offer.Id, offer);
         }
 
-        public IEnumerable<Facture> GetFacturesForClient(Client client)
+        public IEnumerable<Event> GetFacturesForClient(Client client)
         {
             var factures = GetFactures();
 
@@ -63,12 +63,12 @@ namespace Store.BLL
             return GetProducts().Where(p => p.Type.Equals(type));
         }
 
-        public IEnumerable<Facture> GetFacturesForProduct(Product product)
+        public IEnumerable<Event> GetFacturesForProduct(Product product)
         {
             return GetFactures().Where(f => f.Offer.Product.Id.Equals(product.Id));
         }
 
-        public IEnumerable<Facture> GetFacturesInTime(DateTimeOffset startDate, DateTimeOffset endDate)
+        public IEnumerable<Event> GetFacturesInTime(DateTimeOffset startDate, DateTimeOffset endDate)
         {
             return GetFactures().Where(f => f.PurchaseDate >= startDate && f.PurchaseDate <= endDate);
         }
@@ -109,9 +109,9 @@ namespace Store.BLL
             _dataRepository.AddProduct(product);
         }
 
-        public void DeleteFacture(Facture facture)
+        public void DeleteFacture(Event facture)
         {
-            _dataRepository.DeleteFacture(facture);
+            _dataRepository.DeleteEvent(facture);
         }
 
         public void DeleteClient(Client client)
@@ -134,9 +134,9 @@ namespace Store.BLL
             return _dataRepository.GetAllClients();
         }
 
-        public IEnumerable<Facture> GetFactures()
+        public IEnumerable<Event> GetFactures()
         {
-            return _dataRepository.GetAllFactures();
+            return _dataRepository.GetAllEvents();
         }
 
         public IEnumerable<Offer> GetOffers()
@@ -149,9 +149,9 @@ namespace Store.BLL
             return _dataRepository.GetAllProducts();
         }
 
-        public void UpdateFacture(Guid factureId, Facture facture)
+        public void UpdateFacture(Guid factureId, Event facture)
         {
-            _dataRepository.UpdateFacture(factureId, facture);
+            _dataRepository.UpdateEvent(factureId, facture);
         }
 
         public void UpdateClient(string email, Client client)

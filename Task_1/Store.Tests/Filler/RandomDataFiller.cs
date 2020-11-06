@@ -56,7 +56,7 @@ namespace Store.Tests.Filler
                     repository.GetAllClients().ToArray()[Random.Next(0, _clientNumber)],
                     repository.GetAllOffers().ToArray()[Random.Next(0, _productNumber)],
                     DateTimeOffset.Now.AddDays(Random.Next(-360, 0)).AddHours(Random.Next(-12, 12)));
-                repository.AddFacture(facture);
+                repository.AddEvent(facture);
             }
         }
 

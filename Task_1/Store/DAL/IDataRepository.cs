@@ -7,23 +7,23 @@ namespace Store.DAL
     public interface IDataRepository
     {
         void AddClient(Client client);
-        void AddFacture(Facture facture);
+        void AddEvent(Event evt);
         void AddOffer(Offer offer);
         void AddProduct(Product product);
         void DeleteClient(Client client);
-        void DeleteFacture(Facture facture);
+        void DeleteEvent(Event evt);
         void DeleteOffer(Offer offer);
         void DeleteProduct(Product product);
         IEnumerable<Client> GetAllClients();
-        IEnumerable<Facture> GetAllFactures();
+        IEnumerable<Event> GetAllEvents();
         IEnumerable<Offer> GetAllOffers();
         IEnumerable<Product> GetAllProducts();
         Client GetClient(string email);
-        Facture GetFacture(Guid factureId);
+        Event GetEvent(Guid eventId);
         Offer GetOffer(Guid offerId);
         Product GetProduct(Guid productId);
         void UpdateClient(string email, Client client);
-        void UpdateFacture(Guid factureId, Facture facture);
+        void UpdateEvent(Guid eventId, Event evt);
         void UpdateOffer(Guid offerId, Offer offer);
         void UpdateProduct(Guid productId, Product product);
     }

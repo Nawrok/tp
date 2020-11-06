@@ -24,14 +24,14 @@ namespace Store.DAL
             _dataContext.Clients.Add(client);
         }
 
-        public void AddFacture(Facture facture)
+        public void AddEvent(Event evt)
         {
-            if (_dataContext.Factures.Any(f => f.Id.Equals(facture.Id)))
+            if (_dataContext.Events.Any(e => e.Id.Equals(evt.Id)))
             {
-                throw new ArgumentException($"Facture '{facture.Id}' already exists!");
+                throw new ArgumentException($"{evt.GetType().Name} '{evt.Id}' already exists!");
             }
 
-            _dataContext.Factures.Add(facture);
+            _dataContext.Events.Add(evt);
         }
 
         public void AddOffer(Offer offer)
@@ -62,11 +62,11 @@ namespace Store.DAL
             }
         }
 
-        public void DeleteFacture(Facture facture)
+        public void DeleteEvent(Event evt)
         {
-            if (!_dataContext.Factures.Remove(facture))
+            if (!_dataContext.Events.Remove(evt))
             {
-                throw new ArgumentException($"Facture '{facture.Id}' does not exist!");
+                throw new ArgumentException($"{evt.GetType().Name} '{evt.Id}' does not exist!");
             }
         }
 
@@ -91,9 +91,9 @@ namespace Store.DAL
             return _dataContext.Clients;
         }
 
-        public IEnumerable<Facture> GetAllFactures()
+        public IEnumerable<Event> GetAllEvents()
         {
-            return _dataContext.Factures;
+            return _dataContext.Events;
         }
 
         public IEnumerable<Offer> GetAllOffers()
@@ -111,9 +111,9 @@ namespace Store.DAL
             return _dataContext.Clients.FirstOrDefault(c => c.Email.Equals(email));
         }
 
-        public Facture GetFacture(Guid factureId)
+        public Event GetEvent(Guid eventId)
         {
-            return _dataContext.Factures.FirstOrDefault(f => f.Id.Equals(factureId));
+            return _dataContext.Events.FirstOrDefault(e => e.Id.Equals(eventId));
         }
 
         public Offer GetOffer(Guid offerId)
@@ -142,16 +142,16 @@ namespace Store.DAL
             _dataContext.Clients[id] = client;
         }
 
-        public void UpdateFacture(Guid factureId, Facture facture)
+        public void UpdateEvent(Guid eventId, Event evt)
         {
-            var curFacture = _dataContext.Factures.FirstOrDefault(f => f.Id.Equals(facture.Id));
-            if (curFacture == null)
+            var curEvent = _dataContext.Events.FirstOrDefault(e => e.Id.Equals(evt.Id));
+            if (curEvent == null)
             {
-                throw new ArgumentException($"Facture '{factureId}' does not exist!");
+                throw new ArgumentException($"{evt.GetType().Name} '{eventId}' does not exist!");
             }
 
-            var id = _dataContext.Factures.IndexOf(curFacture);
-            _dataContext.Factures[id] = facture;
+            var id = _dataContext.Events.IndexOf(curEvent);
+            _dataContext.Events[id] = evt;
         }
 
         public void UpdateOffer(Guid offerId, Offer offer)
