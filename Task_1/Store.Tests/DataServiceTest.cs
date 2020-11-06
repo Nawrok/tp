@@ -13,7 +13,7 @@ namespace Store.Tests
         [TestInitialize]
         public void TestInitialize()
         {
-            _dataService = new DataService(new DataRepository(new RandomDataFiller()));
+            _dataService = new DataService(new DataRepository(new ConstDataFiller()));
         }
 
         [TestMethod]

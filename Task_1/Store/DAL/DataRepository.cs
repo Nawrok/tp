@@ -11,7 +11,7 @@ namespace Store.DAL
 
         public DataRepository(IDataFiller dataFiller)
         {
-            dataFiller.Fill(_dataContext);
+            dataFiller.Fill(this);
         }
 
         public void AddClient(Client client)

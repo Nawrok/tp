@@ -12,7 +12,7 @@ namespace Store.Tests
         [TestInitialize]
         public void TestInitialize()
         {
-            _dataRepository = new DataRepository(new RandomDataFiller());
+            _dataRepository = new DataRepository(new RandomDataFiller(5, 10, 15));
         }
 
         [TestMethod]

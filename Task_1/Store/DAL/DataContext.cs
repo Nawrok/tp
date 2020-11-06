@@ -5,7 +5,7 @@ using Store.DAL.Model;
 
 namespace Store.DAL
 {
-    public class DataContext
+    internal class DataContext
     {
         public List<Client> Clients { get; } = new List<Client>();
         public Dictionary<Guid, Product> Products { get; } = new Dictionary<Guid, Product>();
