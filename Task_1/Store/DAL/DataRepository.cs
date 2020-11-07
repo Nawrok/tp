@@ -11,12 +11,12 @@ namespace Store.DAL
 
         public IEnumerable<Facture> GetFactures()
         {
-            return GetAllEvents().Where(e => e.GetType().IsInstanceOfType(typeof(Facture))).Cast<Facture>();
+            return GetAllEvents().Where(e => e is Facture).Cast<Facture>();
         }
 
         public IEnumerable<Return> GetReturns()
         {
-            return GetAllEvents().Where(e => e.GetType().IsInstanceOfType(typeof(Return))).Cast<Return>();
+            return GetAllEvents().Where(e => e is Return).Cast<Return>();
         }
 
         public IEnumerable<Event> GetEventsInTime(DateTimeOffset startDate, DateTimeOffset endDate)
