@@ -31,12 +31,12 @@ namespace Store.Tests.Filler
             var f2 = new Facture(Guid.NewGuid(), c1, o2, 1, DateTimeOffset.Now);
             var f3 = new Facture(Guid.NewGuid(), c1, o3, 3, DateTimeOffset.Now);
             var f4 = new Facture(Guid.NewGuid(), c1, o1, 5, DateTimeOffset.Now);
-            //var r1 = new Return(f1, DateTimeOffset.Now);
+            var r1 = new Return(f1, DateTimeOffset.Now);
             repository.AddEvent(f1);
             repository.AddEvent(f2);
             repository.AddEvent(f3);
             repository.AddEvent(f4);
-            //repository.AddEvent(r1);
+            repository.UpdateEvent(r1.Id, r1);
         }
     }
 }

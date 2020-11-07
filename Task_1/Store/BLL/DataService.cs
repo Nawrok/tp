@@ -12,7 +12,7 @@ namespace Store.BLL
 
         public DataService(IDataRepository dataRepository)
         {
-            _dataRepository = dataRepository;
+            _dataRepository = dataRepository ?? throw new ArgumentNullException(nameof(dataRepository));
         }
 
         public Client AddClient(string name, string surname, string email, string city)

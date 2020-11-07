@@ -52,8 +52,8 @@ namespace Store.Tests.Filler
             {
                 var facture = new Facture(
                     Guid.NewGuid(),
-                    repository.GetAllClients().ToArray()[Random.Next(0, _clientNumber - 1)],
-                    repository.GetAllOffers().ToArray()[Random.Next(0, _productNumber - 1)],
+                    repository.GetAllClients().ToArray()[Random.Next(0, _clientNumber)],
+                    repository.GetAllOffers().ToArray()[Random.Next(0, _productNumber)],
                     Random.Next(1, 20),
                     DateTimeOffset.Now.AddDays(Random.Next(-360, 0)).AddHours(Random.Next(-12, 12)));
                 repository.AddEvent(facture);
