@@ -4,13 +4,12 @@ namespace Store.DAL.Model
 {
     public class Return : Event
     {
-        public Return(Guid id, Client client, Offer offer, int productCount, DateTimeOffset purchaseDate,
-            DateTimeOffset returnDate) : base(id, client, offer, productCount, purchaseDate)
+        public Return(Facture facture, DateTimeOffset returnDate) : base(facture.Id, facture.Client, facture.Offer, facture.ProductCount, facture.PurchaseDate)
         {
             ReturnDate = returnDate;
         }
 
-        public DateTimeOffset ReturnDate { get; set; }
+        public DateTimeOffset ReturnDate { get; }
 
         public override string ToString()
         {

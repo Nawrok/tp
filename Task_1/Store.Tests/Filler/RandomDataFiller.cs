@@ -9,14 +9,14 @@ namespace Store.Tests.Filler
     {
         private static readonly Random Random = new Random();
         private readonly int _clientNumber;
-        private readonly int _factureNumber;
+        private readonly int _eventNumber;
         private readonly int _productNumber;
 
-        public RandomDataFiller(int clientNumber, int productNumber, int factureNumber)
+        public RandomDataFiller(int clientNumber, int productNumber, int eventNumber)
         {
             _clientNumber = clientNumber;
             _productNumber = productNumber;
-            _factureNumber = factureNumber;
+            _eventNumber = eventNumber;
         }
 
         public void Fill(ICrudRepository repository)
@@ -48,15 +48,23 @@ namespace Store.Tests.Filler
                 repository.AddOffer(offer);
             }
 
-            for (var i = 0; i < _factureNumber; i++)
+            for (var i = 0; i < _eventNumber; i++)
             {
                 var facture = new Facture(
                     Guid.NewGuid(),
-                    repository.GetAllClients().ToArray()[Random.Next(0, _clientNumber)],
-                    repository.GetAllOffers().ToArray()[Random.Next(0, _productNumber)],
+                    repository.GetAllClients().ToArray()[Random.Next(0, _clientNumber - 1)],
+                    repository.GetAllOffers().ToArray()[Random.Next(0, _productNumber - 1)],
                     Random.Next(1, 20),
                     DateTimeOffset.Now.AddDays(Random.Next(-360, 0)).AddHours(Random.Next(-12, 12)));
                 repository.AddEvent(facture);
+            }
+
+            for (var i = 0; i < _eventNumber / 3; i++)
+            {
+                var factures = repository.GetAllEvents().Where(e => e is Facture).ToArray();
+                var evt = factures[Random.Next(0, factures.Length)];
+                var returned = new Return(evt as Facture, evt.PurchaseDate.AddDays(Random.Next(1, 30)));
+                repository.UpdateEvent(returned.Id, returned);
             }
         }
 

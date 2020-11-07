@@ -14,7 +14,7 @@ namespace Store.DAL.Model
             PurchaseDate = purchaseDate;
         }
 
-        public Guid Id { get; set; }
+        public Guid Id { get; }
         public Client Client { get; set; }
         public Offer Offer { get; set; }
         public int ProductCount { get; set; }

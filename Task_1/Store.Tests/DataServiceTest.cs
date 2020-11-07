@@ -17,87 +17,45 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void AddClient_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void AddClient_Test() { }
 
         [TestMethod]
-        public void AddProduct_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void AddProduct_Test() { }
 
         [TestMethod]
-        public void AddOffer_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void AddOffer_Test() { }
 
         [TestMethod]
-        public void DeleteProduct_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void DeleteProduct_Test() { }
 
         [TestMethod]
-        public void DeleteOffer_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void DeleteOffer_Test() { }
 
         [TestMethod]
-        public void BuyProducts_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void BuyProducts_Test() { }
 
         [TestMethod]
-        public void ReturnProducts_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void ReturnProducts_Test() { }
 
         [TestMethod]
-        public void UpdateOfferState_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void UpdateOfferState_Test() { }
 
         [TestMethod]
-        public void GetFacturesForClient_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void GetFacturesForClient_Test() { }
 
         [TestMethod]
-        public void GetReturnsForClient_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void GetReturnsForClient_Test() { }
 
         [TestMethod]
-        public void GetFacturesForProduct_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void GetFacturesForProduct_Test() { }
 
         [TestMethod]
-        public void GetClientsForProduct_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void GetClientsForProduct_Test() { }
 
         [TestMethod]
-        public void GetBoughtProductsForClient_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void GetBoughtProductsForClient_Test() { }
 
         [TestMethod]
-        public void GetProductSales_Test()
-        {
-            Assert.Inconclusive();
-        }
+        public void GetProductSales_Test() { }
     }
 }

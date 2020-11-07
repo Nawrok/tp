@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Store.DAL;
-using Store.DAL.Model;
 using Store.Tests.Filler;
-using System.Collections.Generic;
 
 namespace Store.Tests
 {
