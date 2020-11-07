@@ -116,9 +116,9 @@ namespace Store.DAL
             return _dataContext.Events.FirstOrDefault(e => e.Id.Equals(eventId));
         }
 
-        public Offer GetOffer(Product product)
+        public Offer GetOffer(Guid productId)
         {
-            return _dataContext.Offers.FirstOrDefault(o => o.Product.Id.Equals(product.Id));
+            return _dataContext.Offers.FirstOrDefault(o => o.Product.Id.Equals(productId));
         }
 
         public Product GetProduct(Guid productId)

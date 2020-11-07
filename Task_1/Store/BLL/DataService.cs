@@ -15,28 +15,46 @@ namespace Store.BLL
             _dataRepository = dataRepository;
         }
 
+        public Client RegisterClient(string name, string surname, string email, string city)
+        {
+            var client = _dataRepository.GetClient(email) ?? new Client(name, surname, email, city);
+            return client;
+        }
+
         public Facture BuyProducts(Client client, Offer offer, int productCount)
         {
-            if (offer.ProductsInStock == 0)
+            var curClient = _dataRepository.GetClient(client.Email);
+            if (curClient == null)
+            {
+                throw new ArgumentException("Client is unregistered!");
+            }
+
+            var curOffer = _dataRepository.GetOffer(offer.Product.Id);
+            if (curOffer == null)
+            {
+                throw new ArgumentException("No offer is available for this product!");
+            }
+
+            if (curOffer.ProductsInStock == 0)
             {
                 throw new InvalidOperationException("Currently, there are no products in stock, we are sorry!");
             }
 
-            if (offer.ProductsInStock - productCount < 0)
+            if (curOffer.ProductsInStock < productCount)
             {
                 throw new InvalidOperationException("You want to buy more products than we have in stock!");
             }
 
-            var facture = new Facture(Guid.NewGuid(), client, offer, productCount, DateTimeOffset.Now);
+            curOffer.ProductsInStock -= productCount;
+            _dataRepository.UpdateOffer(offer.Product.Id, curOffer);
 
-            offer.ProductsInStock -= productCount;
-            _dataRepository.UpdateOffer(offer.Product.Id, offer);
+            var facture = new Facture(Guid.NewGuid(), client, curOffer, productCount, DateTimeOffset.Now);
             _dataRepository.AddEvent(facture);
 
             return facture;
         }
 
-        public Return ReturnProducts(Facture facture, int returningProducts)
+        public Return ReturnProducts(Facture facture, int productCount)
         {
             var curFacture = _dataRepository.GetEvent(facture.Id);
             if (curFacture == null)
@@ -44,19 +62,28 @@ namespace Store.BLL
                 throw new ArgumentException("You cannot return products with not existing facture!");
             }
 
-            Return returned = curFacture as Return;
-            returned.ReturnDate = DateTimeOffset.Now;
-            facture.Offer.ProductsInStock += returningProducts;
+            if (facture.ProductCount < productCount)
+            {
+                throw new InvalidOperationException("You want to return more products than you bought!");
+            }
 
-            _dataRepository.UpdateEvent(returned.Id, returned);
+            var returned = curFacture as Return;
+            if (returned != null)
+            {
+                returned.ReturnDate = DateTimeOffset.Now;
+                _dataRepository.UpdateEvent(returned.Id, returned);
+            }
+
+            var curOffer = curFacture.Offer;
+            curOffer.ProductsInStock += productCount;
             _dataRepository.UpdateOffer(facture.Offer.Product.Id, facture.Offer);
 
             return returned;
         }
 
-            public void UpdateOfferState(Product product, int productsInStock)
+        public void UpdateOfferState(Product product, int productsInStock)
         {
-            var offer = _dataRepository.GetAllOffers().FirstOrDefault(o => o.Product.Id.Equals(product.Id));
+            var offer = _dataRepository.GetOffer(product.Id);
             if (offer == null)
             {
                 throw new ArgumentException("No offer is available for this product!");
