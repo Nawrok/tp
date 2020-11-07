@@ -15,13 +15,57 @@ namespace Store.BLL
             _dataRepository = dataRepository;
         }
 
-        public Client RegisterClient(string name, string surname, string email, string city)
+        public Client AddClient(string name, string surname, string email, string city)
         {
-            var client = _dataRepository.GetClient(email) ?? new Client(name, surname, email, city);
+            var client = _dataRepository.GetClient(email);
+            if (client != null)
+            {
+                return client;
+            }
+
+            client = new Client(name, surname, email, city);
+            _dataRepository.AddClient(client);
             return client;
         }
 
-        public Facture BuyProducts(Client client, Offer offer, int productCount)
+        public Product AddProduct(Guid id, string name, string description, string type)
+        {
+            var product = _dataRepository.GetProduct(id);
+            if (product != null)
+            {
+                return product;
+            }
+
+            product = new Product(id, name, description, type);
+            _dataRepository.AddProduct(product);
+            return product;
+        }
+
+        public Offer AddOffer(Guid productId, decimal netPrice, decimal tax, int productsInStock)
+        {
+            var offer = _dataRepository.GetOffer(productId);
+            if (offer != null)
+            {
+                return offer;
+            }
+
+            var curProduct = _dataRepository.GetProduct(productId);
+            if (curProduct == null)
+            {
+                throw new ArgumentException($"Product '{productId}' does not exists!");
+            }
+
+            if (netPrice <= 0 || tax < 0 || productsInStock < 0)
+            {
+                throw new ArgumentException("Price, tax and products in stock must be positive numbers!");
+            }
+
+            offer = new Offer(curProduct, netPrice, tax, productsInStock);
+            _dataRepository.AddOffer(offer);
+            return offer;
+        }
+
+        public Facture BuyProducts(Client client, Guid productId, int productCount)
         {
             var curClient = _dataRepository.GetClient(client.Email);
             if (curClient == null)
@@ -29,7 +73,7 @@ namespace Store.BLL
                 throw new ArgumentException("Client is unregistered!");
             }
 
-            var curOffer = _dataRepository.GetOffer(offer.Product.Id);
+            var curOffer = _dataRepository.GetOffer(productId);
             if (curOffer == null)
             {
                 throw new ArgumentException("No offer is available for this product!");
@@ -46,7 +90,7 @@ namespace Store.BLL
             }
 
             curOffer.ProductsInStock -= productCount;
-            _dataRepository.UpdateOffer(offer.Product.Id, curOffer);
+            _dataRepository.UpdateOffer(productId, curOffer);
 
             var facture = new Facture(Guid.NewGuid(), client, curOffer, productCount, DateTimeOffset.Now);
             _dataRepository.AddEvent(facture);
@@ -81,17 +125,21 @@ namespace Store.BLL
             return returned;
         }
 
-        public void UpdateOfferState(Product product, int productsInStock)
+        public void UpdateOfferState(Guid productId, int productsInStock)
         {
-            var offer = _dataRepository.GetOffer(product.Id);
+            var offer = _dataRepository.GetOffer(productId);
             if (offer == null)
             {
                 throw new ArgumentException("No offer is available for this product!");
             }
 
-            offer.ProductsInStock = productsInStock;
+            if (productsInStock < 0)
+            {
+                throw new ArgumentException("Products in stock must be positive number!");
+            }
 
-            _dataRepository.UpdateOffer(offer.Product.Id, offer);
+            offer.ProductsInStock = productsInStock;
+            _dataRepository.UpdateOffer(productId, offer);
         }
 
         public IEnumerable<Facture> GetFacturesForClient(Client client)
@@ -126,7 +174,5 @@ namespace Store.BLL
             var totalSales = GetFacturesForProduct(product).Sum(f => f.GrossPrice);
             return (productCount, totalSales);
         }
-
-        //TODO RESEARCH ABOUT DELEGATING MEMBERS TO REPOSITORY
     }
 }
