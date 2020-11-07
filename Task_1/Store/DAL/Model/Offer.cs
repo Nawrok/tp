@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Store.DAL.Model
+﻿namespace Store.DAL.Model
 {
     public class Offer
     {

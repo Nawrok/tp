@@ -10,6 +10,7 @@ namespace Store.DAL.Model
             Client = client;
             Offer = offer;
             ProductCount = productCount;
+            GrossPrice = ProductCount * (Offer.NetPrice + Offer.NetPrice * Offer.Tax);
             PurchaseDate = purchaseDate;
         }
 

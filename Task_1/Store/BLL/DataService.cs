@@ -38,7 +38,7 @@ namespace Store.BLL
 
         public void UpdateOfferState(Product product, int productsInStock)
         {
-            var offer = GetOffers().FirstOrDefault(o => o.Product.Id.Equals(product.Id));
+            var offer = _dataRepository.GetAllOffers().FirstOrDefault(o => o.Product.Id.Equals(product.Id));
             if (offer == null)
             {
                 throw new ArgumentException("No offer is available for this product!");
@@ -49,40 +49,30 @@ namespace Store.BLL
             _dataRepository.UpdateOffer(offer.Product.Id, offer);
         }
 
-        public IEnumerable<Event> GetFacturesForClient(Client client)
+        public IEnumerable<Facture> GetFacturesForClient(Client client)
         {
-            return GetFactures().Where(f => f.Client.Email.Equals(client.Email));
+            return _dataRepository.GetFactures().Where(f => f.Client.Email.Equals(client.Email));
         }
 
-        public IEnumerable<Client> GetClientsFromCity(string city)
+        public IEnumerable<Return> GetReturnsForClient(Client client)
         {
-            return GetClients().Where(c => c.City.Equals(city));
-        }
-
-        public IEnumerable<Product> GetBoughtProducts(Client client)
-        {
-            return GetFacturesForClient(client).Select(f => f.Offer.Product);
-        }
-
-        public IEnumerable<Product> GetTheSameTypeProducts(string type)
-        {
-            return GetProducts().Where(p => p.Type.Equals(type));
+            return _dataRepository.GetReturns().Where(f => f.Client.Email.Equals(client.Email));
         }
 
         public IEnumerable<Facture> GetFacturesForProduct(Product product)
         {
-            return GetFactures().Where(f => f.Offer.Product.Id.Equals(product.Id));
-        }
-
-        public IEnumerable<Event> GetFacturesInTime(DateTimeOffset startDate, DateTimeOffset endDate)
-        {
-            return GetFactures().Where(f => f.PurchaseDate >= startDate && f.PurchaseDate <= endDate);
+            return _dataRepository.GetFactures().Where(f => f.Offer.Product.Id.Equals(product.Id));
         }
 
         public IEnumerable<Client> GetClientsForProduct(Product product)
         {
             var clientEmails = GetFacturesForProduct(product).Select(f => f.Client.Email).Distinct();
-            return clientEmails.Select(email => GetClients().First(c => c.Email.Equals(email)));
+            return clientEmails.Select(email => _dataRepository.GetAllClients().First(c => c.Email.Equals(email)));
+        }
+
+        public IEnumerable<Product> GetBoughtProductsForClient(Client client)
+        {
+            return GetFacturesForClient(client).Select(f => f.Offer.Product);
         }
 
         public ValueTuple<int, decimal> GetProductSales(Product product)
@@ -92,89 +82,6 @@ namespace Store.BLL
             return (productCount, totalSales);
         }
 
-        public void AddClient(Client client)
-        {
-            _dataRepository.AddClient(client);
-        }
-
-        public void AddOffer(Offer offer)
-        {
-            _dataRepository.AddOffer(offer);
-        }
-
-        public void AddProduct(Product product)
-        {
-            _dataRepository.AddProduct(product);
-        }
-
-        public void DeleteEvent(Event evt)
-        {
-            _dataRepository.DeleteEvent(evt);
-        }
-
-        public void DeleteClient(Client client)
-        {
-            _dataRepository.DeleteClient(client);
-        }
-
-        public void DeleteOffer(Offer offer)
-        {
-            _dataRepository.DeleteOffer(offer);
-        }
-
-        public void DeleteProduct(Product product)
-        {
-            _dataRepository.DeleteProduct(product);
-        }
-
-        public IEnumerable<Client> GetClients()
-        {
-            return _dataRepository.GetAllClients();
-        }
-
-        public IEnumerable<Facture> GetFactures()
-        {
-            return _dataRepository.GetAllEvents().Where(e => e.GetType().IsInstanceOfType(typeof(Facture))).Cast<Facture>();
-        }
-
-        public IEnumerable<Return> GetReturns()
-        {
-            return _dataRepository.GetAllEvents().Where(e => e.GetType().IsInstanceOfType(typeof(Return))).Cast<Return>();
-        }
-
-        public IEnumerable<Event> GetEvents()
-        {
-            return _dataRepository.GetAllEvents();
-        }
-
-        public IEnumerable<Offer> GetOffers()
-        {
-            return _dataRepository.GetAllOffers();
-        }
-
-        public IEnumerable<Product> GetProducts()
-        {
-            return _dataRepository.GetAllProducts();
-        }
-
-        public void UpdateEvent(Guid eventId, Event evt)
-        {
-            _dataRepository.UpdateEvent(eventId, evt);
-        }
-
-        public void UpdateClient(string email, Client client)
-        {
-            _dataRepository.UpdateClient(email, client);
-        }
-
-        public void UpdateOffer(Guid offerId, Offer offer)
-        {
-            _dataRepository.UpdateOffer(offerId, offer);
-        }
-
-        public void UpdateProduct(Guid productId, Product product)
-        {
-            _dataRepository.UpdateProduct(productId, product);
-        }
+        //TODO RESEARCH ABOUT DELEGATING MEMBERS TO REPOSITORY
     }
 }

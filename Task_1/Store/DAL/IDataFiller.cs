@@ -2,6 +2,6 @@
 {
     public interface IDataFiller
     {
-        void Fill(IDataRepository repository);
+        void Fill(ICrudRepository repository);
     }
 }

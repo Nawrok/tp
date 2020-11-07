@@ -6,7 +6,7 @@ namespace Store.Tests.Filler
 {
     internal class ConstDataFiller : IDataFiller
     {
-        public void Fill(IDataRepository repository)
+        public void Fill(ICrudRepository repository)
         {
             var c1 = new Client("Maciej", "Błażewicz", "mblazewicz@o2.pl", "Rawa Mazowiecka");
             var c2 = new Client("Sebastian", "Nawrocki", "snawrocki@interia.pl", "Łódź");
@@ -29,12 +29,12 @@ namespace Store.Tests.Filler
             repository.AddOffer(o3);
             repository.AddOffer(o4);
 
-            var e1 = new Facture(Guid.NewGuid(), c2, o1, 5, DateTimeOffset.Now.AddDays(-7));
-            var e2 = new Facture(Guid.NewGuid(), c1, o2, 1, DateTimeOffset.Now);
-            var e3 = new Facture(Guid.NewGuid(), c1, o4, 3, DateTimeOffset.Now);
-            repository.AddEvent(e1);
-            repository.AddEvent(e2);
-            repository.AddEvent(e3);
+            var f1 = new Facture(Guid.NewGuid(), c2, o1, 5, DateTimeOffset.Now.AddDays(-7));
+            var f2 = new Facture(Guid.NewGuid(), c1, o2, 1, DateTimeOffset.Now);
+            var f3 = new Facture(Guid.NewGuid(), c1, o4, 3, DateTimeOffset.Now);
+            repository.AddEvent(f1);
+            repository.AddEvent(f2);
+            repository.AddEvent(f3);
         }
     }
 }

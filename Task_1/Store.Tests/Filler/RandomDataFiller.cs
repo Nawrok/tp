@@ -19,7 +19,7 @@ namespace Store.Tests.Filler
             _factureNumber = factureNumber;
         }
 
-        public void Fill(IDataRepository repository)
+        public void Fill(ICrudRepository repository)
         {
             for (var i = 0; i < _clientNumber; i++)
             {
@@ -42,9 +42,9 @@ namespace Store.Tests.Filler
 
                 var offer = new Offer(
                     product,
-                    new decimal(Random.NextDouble()) * 14.123M,
+                    new decimal(Random.NextDouble()) * 21.37m,
                     new decimal(Random.NextDouble()),
-                    Random.Next(2, 100));
+                    Random.Next(5, 100));
                 repository.AddOffer(offer);
             }
 
