@@ -67,44 +67,19 @@ namespace Store.BLL
 
         public void DeleteProduct(Guid productId)
         {
-            if (_dataRepository.GetAllOffers().Any(o => o.Product.Id.Equals(productId)))
-            {
-                throw new InvalidOperationException("You cannot delete product that is linked to existing offer!");
-            }
-
             var curProduct = _dataRepository.GetProduct(productId);
             _dataRepository.DeleteProduct(curProduct);
         }
 
         public void DeleteOffer(Guid productId)
         {
-            if (_dataRepository.GetAllProducts().Any(p => p.Id.Equals(productId)))
-            {
-                throw new InvalidOperationException("You cannot delete offer that is linked to existing product!");
-            }
-            if(_dataRepository.GetAllEvents().Any(e => e.Offer.Product.Id.Equals(productId)))
-            {
-                throw new InvalidOperationException("You cannot delete offer that is linked to existing event!");
-            }
-
             var curOffer = _dataRepository.GetOffer(productId);
             _dataRepository.DeleteOffer(curOffer);
         }
 
         public Facture BuyProducts(Client client, Guid productId, int productCount)
         {
-            var curClient = _dataRepository.GetClient(client.Email);
-            if (curClient == null)
-            {
-                throw new ArgumentException("Client is unregistered!");
-            }
-
             var curOffer = _dataRepository.GetOffer(productId);
-            if (curOffer == null)
-            {
-                throw new ArgumentException("No offer is available for this product!");
-            }
-
             if (curOffer.ProductsInStock == 0)
             {
                 throw new InvalidOperationException("Currently, there are no products in stock, we are sorry!");
@@ -118,7 +93,8 @@ namespace Store.BLL
             curOffer.ProductsInStock -= productCount;
             _dataRepository.UpdateOffer(productId, curOffer);
 
-            var facture = new Facture(Guid.NewGuid(), client, curOffer, productCount, DateTimeOffset.Now);
+            var curClient = _dataRepository.GetClient(client.Email);
+            var facture = new Facture(Guid.NewGuid(), curClient, curOffer, productCount, DateTimeOffset.Now);
             _dataRepository.AddEvent(facture);
 
             return facture;

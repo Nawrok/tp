@@ -23,18 +23,21 @@ namespace Store.Tests.Filler
             var o1 = new Offer(p1, 14.50m, 0.05m, 40);
             var o2 = new Offer(p2, 450.00m, 0.23m, 5);
             var o3 = new Offer(p3, 1500.00m, 0.23m, 2);
-            var o4 = new Offer(p1, 9.99m, 0.05m, 20);
             repository.AddOffer(o1);
             repository.AddOffer(o2);
             repository.AddOffer(o3);
-            repository.AddOffer(o4);
 
-            var f1 = new Facture(Guid.NewGuid(), c2, o1, 5, DateTimeOffset.Now.AddDays(-7));
-            var f2 = new Facture(Guid.NewGuid(), c1, o2, 1, DateTimeOffset.Now);
-            var f3 = new Facture(Guid.NewGuid(), c1, o4, 3, DateTimeOffset.Now);
+            Event f1 = new Facture(Guid.NewGuid(), c2, o1, 5, DateTimeOffset.Now.AddDays(-7));
+            Event f2 = new Facture(Guid.NewGuid(), c1, o2, 1, DateTimeOffset.Now);
+            Event f3 = new Facture(Guid.NewGuid(), c1, o3, 3, DateTimeOffset.Now);
+            Event f4 = new Facture(Guid.NewGuid(), c1, o1, 5, DateTimeOffset.Now);
+            Return r1 = f1 as Return;
+            r1.ReturnDate = DateTimeOffset.Now;
             repository.AddEvent(f1);
             repository.AddEvent(f2);
             repository.AddEvent(f3);
+            repository.AddEvent(f4);
+            repository.AddEvent(r1);
         }
     }
 }

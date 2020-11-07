@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Store.DAL.Model;
 
@@ -31,6 +32,16 @@ namespace Store.DAL
                 throw new ArgumentException($"{evt.GetType().Name} '{evt.Id}' already exists!");
             }
 
+            if(!_dataContext.Offers.Any(o => o.Product.Id.Equals(evt.Offer.Product.Id)))
+            {
+                throw new InvalidDataException("Event refers to offer that is not in repository!");
+            }
+
+            if(!_dataContext.Clients.Any(c => c.Email.Equals(evt.Client.Email)))
+            {
+                throw new InvalidDataException("Event refers to client that is not in repository!");
+            }
+
             _dataContext.Events.Add(evt);
         }
 
@@ -39,6 +50,11 @@ namespace Store.DAL
             if (_dataContext.Offers.Any(o => o.Product.Id.Equals(offer.Product.Id)))
             {
                 throw new ArgumentException($"Offer for product '{offer.Product.Name}' already exists!");
+            }
+
+            if (!_dataContext.Products.Any(p => p.Key.Equals(offer.Product.Id)))
+            {
+                throw new InvalidDataException("Offer refers to product that is not in repository!");
             }
 
             _dataContext.Offers.Add(offer);
@@ -64,6 +80,16 @@ namespace Store.DAL
 
         public void DeleteEvent(Event evt)
         {
+            if (_dataContext.Offers.Any(o => o.Product.Id.Equals(evt.Offer.Product.Id)))
+            {
+                throw new InvalidDataException("Event refers to offer that is in repository!");
+            }
+
+            if (_dataContext.Clients.Any(c => c.Email.Equals(evt.Client.Email)))
+            {
+                throw new InvalidDataException("Event refers to client that is in repository!");
+            }
+
             if (!_dataContext.Events.Remove(evt))
             {
                 throw new ArgumentException($"{evt.GetType().Name} '{evt.Id}' does not exist!");
@@ -72,6 +98,16 @@ namespace Store.DAL
 
         public void DeleteOffer(Offer offer)
         {
+            if (_dataContext.Products.Any(p => p.Key.Equals(offer.Product.Id)))
+            {
+                throw new InvalidDataException("Offer refers to product that is in repository!");
+            }
+
+            if(_dataContext.Events.Any(e => e.Offer.Product.Id.Equals(offer.Product.Id)))
+            {
+                throw new InvalidDataException("Offer refers to event that is in repository!");
+            }
+
             if (!_dataContext.Offers.Remove(offer))
             {
                 throw new ArgumentException($"Offer for product '{offer.Product.Name}' does not exist!");
@@ -108,22 +144,42 @@ namespace Store.DAL
 
         public Client GetClient(string email)
         {
-            return _dataContext.Clients.FirstOrDefault(c => c.Email.Equals(email));
+            var curClient = _dataContext.Clients.FirstOrDefault(c => c.Email.Equals(email));
+            if (curClient == null)
+            {
+                throw new InvalidDataException($"Client with email '{email}' does not exist!");
+            }
+            return curClient;
         }
 
         public Event GetEvent(Guid eventId)
         {
-            return _dataContext.Events.FirstOrDefault(e => e.Id.Equals(eventId));
+            var curEvent = _dataContext.Events.FirstOrDefault(e => e.Id.Equals(eventId));
+            if (curEvent == null)
+            {
+                throw new InvalidDataException($"Event with id '{eventId}' does not exist!");
+            }
+            return curEvent;
         }
 
         public Offer GetOffer(Guid productId)
         {
-            return _dataContext.Offers.FirstOrDefault(o => o.Product.Id.Equals(productId));
+            var curOffer = _dataContext.Offers.FirstOrDefault(o => o.Product.Id.Equals(productId));
+            if (curOffer == null)
+            {
+                throw new InvalidDataException($"Offer with product id '{productId}' does not exist!");
+            }
+            return curOffer;
         }
 
         public Product GetProduct(Guid productId)
         {
-            return _dataContext.Products.FirstOrDefault(p => p.Key.Equals(productId)).Value;
+            var curProduct = _dataContext.Products.FirstOrDefault(p => p.Key.Equals(productId)).Value;
+            if (curProduct == null)
+            {
+                throw new InvalidDataException($"Product with id '{productId}' does not exist!");
+            }
+            return curProduct;
         }
 
         public void UpdateClient(string email, Client client)
@@ -150,6 +206,16 @@ namespace Store.DAL
                 throw new ArgumentException($"{evt.GetType().Name} '{eventId}' does not exist!");
             }
 
+            if (!_dataContext.Offers.Any(o => o.Product.Id.Equals(evt.Offer.Product.Id)))
+            {
+                throw new InvalidDataException("Event refers to offer that is not in repository!");
+            }
+
+            if (!_dataContext.Clients.Any(c => c.Email.Equals(evt.Client.Email)))
+            {
+                throw new InvalidDataException("Event refers to client that is not in repository!");
+            }
+
             var id = _dataContext.Events.IndexOf(curEvent);
             _dataContext.Events[id] = evt;
         }
@@ -160,6 +226,11 @@ namespace Store.DAL
             if (id == -1)
             {
                 throw new ArgumentException($"Offer for product '{offer.Product.Name}' does not exist!");
+            }
+
+            if (!_dataContext.Products.Any(p => p.Key.Equals(offer.Product.Id)))
+            {
+                throw new InvalidDataException("Offer refers to product that is not in repository!");
             }
 
             _dataContext.Offers[id] = offer;
