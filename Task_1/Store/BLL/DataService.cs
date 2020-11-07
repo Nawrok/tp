@@ -65,6 +65,24 @@ namespace Store.BLL
             return offer;
         }
 
+        public void DeleteProduct(Product product)
+        {
+            if (_dataRepository.GetAllOffers().Any(o => o.Product.Equals(product)))
+            {
+                throw new InvalidOperationException("You cannot delete product that is linked to existing offer!");
+            }
+            _dataRepository.DeleteProduct(product);
+        }
+
+        public void DeleteOffer(Offer offer)
+        {
+            if (_dataRepository.GetAllProducts().Any(p => p.Equals(offer.Product)))
+                {
+                    throw new InvalidOperationException("You cannot delete offer that is linked to existing product!");
+                }
+            _dataRepository.DeleteOffer(offer);
+        }
+
         public Facture BuyProducts(Client client, Guid productId, int productCount)
         {
             var curClient = _dataRepository.GetClient(client.Email);
