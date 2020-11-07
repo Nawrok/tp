@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Store.DAL;
+using Store.DAL.Model;
 using Store.Tests.Filler;
+using System.Collections.Generic;
 
 namespace Store.Tests
 {
@@ -22,7 +24,7 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void AddFacture_Test()
+        public void AddEvent_Test()
         {
             Assert.Inconclusive();
         }
@@ -46,7 +48,7 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void DeleteFacture_Test()
+        public void DeleteEvent_Test()
         {
             Assert.Inconclusive();
         }
@@ -70,7 +72,7 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void GetAllFactures_Test()
+        public void GetAllEvents_Test()
         {
             Assert.Inconclusive();
         }
@@ -94,7 +96,7 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void GetFacture_Test()
+        public void GetEvent_Test()
         {
             Assert.Inconclusive();
         }
@@ -118,7 +120,7 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void UpdateFacture_Test()
+        public void UpdateEvent_Test()
         {
             Assert.Inconclusive();
         }
@@ -131,6 +133,36 @@ namespace Store.Tests
 
         [TestMethod]
         public void UpdateProduct_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void GetFactures_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void GetReturns_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void GetEventsInTime_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void GetClientsFromCity_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void GetTheSameTypeProducts_Test()
         {
             Assert.Inconclusive();
         }

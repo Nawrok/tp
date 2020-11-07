@@ -17,13 +17,43 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void DataService_Test()
+        public void AddClient_Test()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void BuyProduct_Test()
+        public void AddProduct_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void AddOffer_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void DeleteProduct_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void DeleteOffer_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void BuyProducts_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void ReturnProducts_Test()
         {
             Assert.Inconclusive();
         }
@@ -41,19 +71,7 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void GetClientsFromCity_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void GetBoughtProducts_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void GetTheSameTypeProducts_Test()
+        public void GetReturnsForClient_Test()
         {
             Assert.Inconclusive();
         }
@@ -65,109 +83,19 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void GetFacturesInTime_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
         public void GetClientsForProduct_Test()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
+        public void GetBoughtProductsForClient_Test()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
         public void GetProductSales_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void AddClient_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void AddOffer_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void AddProduct_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void DeleteFacture_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void DeleteClient_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void DeleteOffer_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void DeleteProduct_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void GetClients_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void GetFactures_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void GetOffers_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void GetProducts_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void UpdateFacture_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void UpdateClient_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void UpdateOffer_Test()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void UpdateProduct_Test()
         {
             Assert.Inconclusive();
         }
