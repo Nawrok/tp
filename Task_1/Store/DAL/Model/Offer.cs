@@ -10,9 +10,9 @@
             ProductsInStock = productsInStock;
         }
 
-        public Product Product { get; set; }
-        public decimal NetPrice { get; set; }
-        public decimal Tax { get; set; }
+        public Product Product { get; }
+        public decimal NetPrice { get; }
+        public decimal Tax { get; }
         public int ProductsInStock { get; set; }
 
         public override string ToString()

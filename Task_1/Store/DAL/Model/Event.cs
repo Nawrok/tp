@@ -15,11 +15,11 @@ namespace Store.DAL.Model
         }
 
         public Guid Id { get; }
-        public Client Client { get; set; }
-        public Offer Offer { get; set; }
-        public int ProductCount { get; set; }
-        public decimal GrossPrice { get; set; }
-        public DateTimeOffset PurchaseDate { get; set; }
+        public Client Client { get; }
+        public Offer Offer { get; }
+        public int ProductCount { get; }
+        public decimal GrossPrice { get; }
+        public DateTimeOffset PurchaseDate { get; }
 
         public override string ToString()
         {

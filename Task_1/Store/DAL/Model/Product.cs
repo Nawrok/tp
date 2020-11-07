@@ -13,9 +13,9 @@ namespace Store.DAL.Model
         }
 
         public Guid Id { get; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Type { get; set; }
+        public string Name { get; }
+        public string Description { get; }
+        public string Type { get; }
 
         public override string ToString()
         {
