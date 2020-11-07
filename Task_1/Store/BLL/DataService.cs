@@ -36,7 +36,25 @@ namespace Store.BLL
             return facture;
         }
 
-        public void UpdateOfferState(Product product, int productsInStock)
+        public Return ReturnProducts(Facture facture, int returningProducts)
+        {
+            var curFacture = _dataRepository.GetEvent(facture.Id);
+            if (curFacture == null)
+            {
+                throw new ArgumentException("You cannot return products with not existing facture!");
+            }
+
+            Return returned = curFacture as Return;
+            returned.ReturnDate = DateTimeOffset.Now;
+            facture.Offer.ProductsInStock += returningProducts;
+
+            _dataRepository.UpdateEvent(returned.Id, returned);
+            _dataRepository.UpdateOffer(facture.Offer.Product.Id, facture.Offer);
+
+            return returned;
+        }
+
+            public void UpdateOfferState(Product product, int productsInStock)
         {
             var offer = _dataRepository.GetAllOffers().FirstOrDefault(o => o.Product.Id.Equals(product.Id));
             if (offer == null)
