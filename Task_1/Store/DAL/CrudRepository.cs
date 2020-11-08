@@ -80,11 +80,6 @@ namespace Store.DAL
 
         public void DeleteEvent(Event evt)
         {
-            if (IsReferringToClient(evt) || IsReferringToOffer(evt))
-            {
-                throw new InvalidDataException("Event refers to client/offer that is in repository!");
-            }
-
             if (!_dataContext.Events.Remove(evt))
             {
                 throw new ArgumentException($"{evt.GetType().Name} '{evt.Id}' does not exist!");
@@ -93,11 +88,6 @@ namespace Store.DAL
 
         public void DeleteOffer(Offer offer)
         {
-            if (IsReferringToProduct(offer) || IsReferringToEvent(offer))
-            {
-                throw new InvalidDataException("Offer refers to event/product that is in repository!");
-            }
-
             if (!_dataContext.Offers.Remove(offer))
             {
                 throw new ArgumentException($"Offer for product '{offer.Product.Name}' does not exist!");
@@ -259,11 +249,6 @@ namespace Store.DAL
         private bool IsReferringToProduct(Offer offer)
         {
             return _dataContext.Products.ContainsKey(offer.Product.Id);
-        }
-
-        private bool IsReferringToEvent(Offer offer)
-        {
-            return _dataContext.Events.Any(e => e.Offer.Product.Id.Equals(offer.Product.Id));
         }
 
         private bool IsReferringToOffer(Product product)
