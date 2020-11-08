@@ -32,7 +32,7 @@ namespace Store.DAL
                 throw new ArgumentException($"{evt.GetType().Name} '{evt.Id}' already exists!");
             }
 
-            if (!IsReferingToClient(evt) || !IsReferingToOffer(evt))
+            if (!IsReferringToClient(evt) || !IsReferringToOffer(evt))
             {
                 throw new InvalidDataException("Event refers to client/offer that is not in repository!");
             }
@@ -52,7 +52,7 @@ namespace Store.DAL
                 throw new ArgumentException($"Offer for product '{offer.Product.Name}' already exists!");
             }
 
-            if (!IsReferingToProduct(offer))
+            if (!IsReferringToProduct(offer))
             {
                 throw new InvalidDataException("Offer refers to product that is not in repository!");
             }
@@ -80,7 +80,7 @@ namespace Store.DAL
 
         public void DeleteEvent(Event evt)
         {
-            if (IsReferingToClient(evt) || IsReferingToOffer(evt))
+            if (IsReferringToClient(evt) || IsReferringToOffer(evt))
             {
                 throw new InvalidDataException("Event refers to client/offer that is in repository!");
             }
@@ -93,7 +93,7 @@ namespace Store.DAL
 
         public void DeleteOffer(Offer offer)
         {
-            if (IsReferingToProduct(offer) || IsReferingToEvent(offer))
+            if (IsReferringToProduct(offer) || IsReferringToEvent(offer))
             {
                 throw new InvalidDataException("Offer refers to event/product that is in repository!");
             }
@@ -106,7 +106,7 @@ namespace Store.DAL
 
         public void DeleteProduct(Product product)
         {
-            if (IsReferingToOffer(product))
+            if (IsReferringToOffer(product))
             {
                 throw new InvalidDataException("Product refers to offer that is in repository!");
             }
@@ -199,9 +199,14 @@ namespace Store.DAL
                 throw new ArgumentException($"Cannot change id '{eventId}' for event '{evt.Id}'!");
             }
 
-            if (!IsReferingToOffer(evt) || !IsReferingToClient(evt))
+            if (!IsReferringToOffer(evt) || !IsReferringToClient(evt))
             {
                 throw new InvalidDataException("Event refers to client/offer that is not in repository!");
+            }
+
+            if (evt is Return returned && returned.ReturnDate < returned.PurchaseDate)
+            {
+                throw new InvalidDataException("Return date must be greater than purchase date!");
             }
 
             var curEvent = GetEvent(eventId);
@@ -211,7 +216,12 @@ namespace Store.DAL
 
         public void UpdateOffer(Guid productId, Offer offer)
         {
-            if (!IsReferingToProduct(offer))
+            if (!productId.Equals(offer.Product.Id))
+            {
+                throw new ArgumentException($"Cannot change id '{productId}' for this offer!");
+            }
+
+            if (!IsReferringToProduct(offer))
             {
                 throw new InvalidDataException("Offer refers to product that is not in repository!");
             }
@@ -236,27 +246,27 @@ namespace Store.DAL
             _dataContext.Products[productId] = product;
         }
 
-        private bool IsReferingToOffer(Event evt)
+        private bool IsReferringToOffer(Event evt)
         {
             return _dataContext.Offers.Any(o => o.Product.Id.Equals(evt.Offer.Product.Id));
         }
 
-        private bool IsReferingToClient(Event evt)
+        private bool IsReferringToClient(Event evt)
         {
             return _dataContext.Clients.Any(c => c.Email.Equals(evt.Client.Email));
         }
 
-        private bool IsReferingToProduct(Offer offer)
+        private bool IsReferringToProduct(Offer offer)
         {
             return _dataContext.Products.ContainsKey(offer.Product.Id);
         }
 
-        private bool IsReferingToEvent(Offer offer)
+        private bool IsReferringToEvent(Offer offer)
         {
             return _dataContext.Events.Any(e => e.Offer.Product.Id.Equals(offer.Product.Id));
         }
 
-        private bool IsReferingToOffer(Product product)
+        private bool IsReferringToOffer(Product product)
         {
             return _dataContext.Offers.Any(o => o.Product.Id.Equals(product.Id));
         }
