@@ -54,7 +54,7 @@ namespace Store.BLL
             _dataRepository.DeleteOffer(curOffer);
         }
 
-        public Facture BuyProducts(Client client, Guid productId, int productCount)
+        public Facture BuyProducts(string email, Guid productId, int productCount)
         {
             var curOffer = _dataRepository.GetOffer(productId);
             if (curOffer.ProductsInStock == 0)
@@ -69,7 +69,7 @@ namespace Store.BLL
 
             curOffer.ProductsInStock -= productCount;
 
-            var curClient = _dataRepository.GetClient(client.Email);
+            var curClient = _dataRepository.GetClient(email);
             var facture = new Facture(Guid.NewGuid(), curClient, curOffer, productCount, DateTimeOffset.Now);
 
             _dataRepository.UpdateOffer(productId, curOffer);
@@ -78,14 +78,14 @@ namespace Store.BLL
             return facture;
         }
 
-        public Return ReturnProducts(Facture facture, int productCount)
+        public Return ReturnProducts(Guid factureId, int productCount)
         {
-            if (facture.ProductCount < productCount)
+            var curFacture = _dataRepository.GetEvent(factureId);
+            if (curFacture.ProductCount < productCount)
             {
                 throw new InvalidOperationException("You want to return more products than you bought!");
             }
 
-            var curFacture = _dataRepository.GetEvent(facture.Id);
             var returned = new Return(curFacture as Facture, DateTimeOffset.Now);
             _dataRepository.UpdateEvent(returned.Id, returned);
 
@@ -96,15 +96,15 @@ namespace Store.BLL
             return returned;
         }
 
-        public void UpdateOfferState(Guid productId, int productsInStock)
+        public void UpdateOfferState(Guid productId, int newProductsNumber)
         {
-            if (productsInStock < 0)
+            if (newProductsNumber < 0)
             {
                 throw new ArgumentException("Products in stock must be positive number!");
             }
 
             var offer = _dataRepository.GetOffer(productId);
-            offer.ProductsInStock = productsInStock;
+            offer.ProductsInStock = newProductsNumber;
             _dataRepository.UpdateOffer(productId, offer);
         }
 

@@ -4,6 +4,8 @@ using Store.DAL;
 using Store.DAL.Model;
 using Store.Tests.Filler;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Store.Tests
 {
@@ -11,6 +13,10 @@ namespace Store.Tests
     public class DataServiceTest
     {
         private DataService _dataService;
+        private List<string> _emails;
+        private List<Guid> _products;
+        private List<Guid> _factures;
+        private List<Guid> _returns;
         private Client _c1;
         private Product _p1;
         private Offer _o1;
@@ -19,95 +25,169 @@ namespace Store.Tests
         [TestInitialize]
         public void TestInitialize()
         {
-            _dataService = new DataService(new DataRepository(new ConstDataFiller()));
+            IDataRepository _dataRepository = new DataRepository(new ConstDataFiller());
+            _dataService = new DataService(_dataRepository);
             _c1 = new Client("Norbert", "Gierczak", "krzycz@disunio.pl", "Katowice");
             _p1 = new Product(Guid.NewGuid(), "Topór", "Broń ostra, można nią rzucać", "Broń");
-            _o1 = new Offer(_p1, 450.00m, 0.23m, 2);
+            _o1 = new Offer(_p1, 450.00m, 0.23m, 5);
             _e1 = new Facture(Guid.NewGuid(), _c1, _o1, 1, DateTimeOffset.Now.AddDays(-2));
+            _emails = _dataRepository.GetAllClients().Select(c => c.Email).ToList();
+            _products = _dataRepository.GetAllProducts().Select(p => p.Id).ToList();
+            _factures = _dataRepository.GetAllFactures().Select(f => f.Id).ToList();
+            _returns = _dataRepository.GetAllReturns().Select(r => r.Id).ToList();
         }
 
         [TestMethod]
-        public void AddClient_Test()
+        public void AddClient_Test_Succesful()
         {
-            Assert.Inconclusive();
+            Assert.AreEqual(_c1.Email, _dataService.AddClient(_c1.Name, _c1.Surname, _c1.Email, _c1.City).Email);
         }
 
         [TestMethod]
-        public void AddProduct_Test()
+        public void AddProduct_Test_Succesful()
         {
-            Assert.Inconclusive();
+            Assert.AreEqual(_p1.Id, _dataService.AddProduct(_p1.Id, _p1.Name, _p1.Description, _p1.Type).Id);
         }
 
         [TestMethod]
-        public void AddOffer_Test()
+        public void AddOffer_Test_Succesful()
         {
-            Assert.Inconclusive();
+            AddProduct_Test_Succesful();
+            Assert.AreEqual(_p1.Id, _dataService.AddOffer(_o1.Product.Id, _o1.NetPrice, _o1.Tax, _o1.ProductsInStock).Product.Id);
         }
 
         [TestMethod]
-        public void DeleteProduct_Test()
+        public void AddOffer_Test_NotPositiveParameters()
         {
-            Assert.Inconclusive();
+            AddProduct_Test_Succesful();
+            Assert.ThrowsException<ArgumentException>(() => _dataService.AddOffer(_o1.Product.Id, -0.01m, -0.05m, -5));
+        }
+
+        [TestMethod]
+        public void DeleteProduct_Test_Successful()
+        {
+            AddProduct_Test_Succesful();
+            Assert.ThrowsException<ArgumentException>(() => AddProduct_Test_Succesful());
+            _dataService.DeleteProduct(_p1.Id);
+            AddProduct_Test_Succesful();
         }
 
         [TestMethod]
         public void DeleteOffer_Test()
         {
-            Assert.Inconclusive();
+            AddOffer_Test_Succesful();
+            Assert.ThrowsException<ArgumentException>(() => AddOffer_Test_Succesful());
+            _dataService.DeleteOffer(_o1.Product.Id);
+            _dataService.DeleteProduct(_p1.Id);
+            AddOffer_Test_Succesful();
         }
 
         [TestMethod]
-        public void BuyProducts_Test()
+        public void BuyProducts_Test_NoProductsInStock()
         {
-            Assert.Inconclusive();
+            _dataService.UpdateOfferState(_products[2], 0);
+            Assert.ThrowsException<InvalidOperationException>(() => _dataService.BuyProducts(_emails[0], _products[2], 5));
         }
 
         [TestMethod]
-        public void ReturnProducts_Test()
+        public void BuyProducts_Test_NotEnoughProductsInStock()
         {
-            Assert.Inconclusive();
+            Assert.ThrowsException<InvalidOperationException>(() => _dataService.BuyProducts(_emails[0], _products[2], 3));
         }
 
         [TestMethod]
-        public void UpdateOfferState_Test()
+        public void BuyProducts_Test_Successful()
         {
-            Assert.Inconclusive();
+            Assert.AreEqual(1, _dataService.GetFacturesForProduct(_products[0]).Count());
+            Assert.AreEqual(3, _dataService.GetFacturesForClient(_emails[0]).Count());
+            Assert.AreEqual(5, _dataService.GetProductSales(_products[0]).Item1);
+            _dataService.BuyProducts(_emails[0], _products[0], 15);
+            Assert.AreEqual(2, _dataService.GetFacturesForProduct(_products[0]).Count());
+            Assert.AreEqual(4, _dataService.GetFacturesForClient(_emails[0]).Count());
+            Assert.AreEqual(20, _dataService.GetProductSales(_products[0]).Item1);
+        }
+
+        [TestMethod]
+        public void ReturnProducts_Test_MoreProductThanBought()
+        {
+            Assert.ThrowsException<InvalidOperationException>(() => _dataService.ReturnProducts(_factures[0], 2));
+        }
+
+        [TestMethod]
+        public void ReturnProducts_Test_Successful()
+        {
+            Assert.AreEqual(0 ,_dataService.GetReturnsForClient(_emails[0]).Count());
+            Assert.AreEqual(2, _dataService.GetFacturesForProduct(_products[1]).Count());
+            Assert.AreEqual(3, _dataService.GetFacturesForClient(_emails[0]).Count());
+            Assert.AreEqual(5, _dataService.GetProductSales(_products[1]).Item1);
+            _dataService.ReturnProducts(_factures[0], 1);
+            Assert.AreEqual(1, _dataService.GetReturnsForClient(_emails[0]).Count());
+            Assert.AreEqual(1, _dataService.GetFacturesForProduct(_products[1]).Count());
+            Assert.AreEqual(2, _dataService.GetFacturesForClient(_emails[0]).Count());
+            Assert.AreEqual(4, _dataService.GetProductSales(_products[1]).Item1);
+        }
+
+        [TestMethod]
+        public void UpdateOfferState_Test_Successful()
+        {
+            Assert.AreEqual(5, _dataService.GetProductSales(_products[0]).Item1);
+            Assert.ThrowsException<InvalidOperationException>(() => _dataService.BuyProducts(_emails[0], _products[0], 41));
+            _dataService.UpdateOfferState(_products[0], 45);
+            _dataService.BuyProducts(_emails[0], _products[0], 41);
+        }
+
+        [TestMethod]
+        public void UpdateOfferState_Test_NotPositiveParameters()
+        {
+            Assert.ThrowsException<ArgumentException>(() => _dataService.UpdateOfferState(_products[0], -1));
         }
 
         [TestMethod]
         public void GetFacturesForClient_Test()
         {
-            Assert.Inconclusive();
+            Assert.AreEqual(3, _dataService.GetFacturesForClient(_emails[0]).Count());
+            Assert.AreEqual(1, _dataService.GetFacturesForClient(_emails[1]).Count());
         }
 
         [TestMethod]
         public void GetReturnsForClient_Test()
         {
-            Assert.Inconclusive();
+            Assert.AreEqual(0, _dataService.GetReturnsForClient(_emails[0]).Count());
+            Assert.AreEqual(1, _dataService.GetReturnsForClient(_emails[1]).Count());
         }
 
         [TestMethod]
         public void GetFacturesForProduct_Test()
         {
-            Assert.Inconclusive();
+            Assert.AreEqual(1, _dataService.GetFacturesForProduct(_products[0]).Count());
+            Assert.AreEqual(2, _dataService.GetFacturesForProduct(_products[1]).Count());
+            Assert.AreEqual(1, _dataService.GetFacturesForProduct(_products[2]).Count());
         }
 
         [TestMethod]
         public void GetClientsForProduct_Test()
         {
-            Assert.Inconclusive();
+            Assert.AreEqual(1, _dataService.GetClientsForProduct(_products[0]).Count());
+            Assert.AreEqual(2, _dataService.GetClientsForProduct(_products[1]).Count());
+            Assert.AreEqual(1, _dataService.GetClientsForProduct(_products[2]).Count());
         }
 
         [TestMethod]
         public void GetBoughtProductsForClient_Test()
         {
-            Assert.Inconclusive();
+            Assert.AreEqual(3, _dataService.GetBoughtProductsForClient(_emails[0]).Count());
+            Assert.AreEqual(1, _dataService.GetBoughtProductsForClient(_emails[1]).Count());
         }
 
         [TestMethod]
         public void GetProductSales_Test()
         {
-            Assert.Inconclusive();
+            Assert.AreEqual(5, _dataService.GetProductSales(_products[0]).Item1);
+            Assert.AreEqual(5.0m * 14.50m * 1.05m, _dataService.GetProductSales(_products[0]).Item2);
+            Assert.AreEqual(5, _dataService.GetProductSales(_products[1]).Item1);
+            Assert.AreEqual(5.0m * 450.00m * 1.23m, _dataService.GetProductSales(_products[1]).Item2);
+            Assert.AreEqual(3, _dataService.GetProductSales(_products[2]).Item1);
+            Assert.AreEqual(3.0m * 1500.00m * 1.23m, _dataService.GetProductSales(_products[2]).Item2);
         }
     }
 }
