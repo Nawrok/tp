@@ -1,40 +1,36 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Store.BLL;
 using Store.DAL;
 using Store.DAL.Model;
 using Store.Tests.Filler;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Store.Tests
 {
     [TestClass]
     public class DataServiceTest
     {
+        private Client _c1;
         private DataService _dataService;
         private List<string> _emails;
-        private List<Guid> _products;
         private List<Guid> _factures;
-        private List<Guid> _returns;
-        private Client _c1;
-        private Product _p1;
         private Offer _o1;
-        private Event _e1;
+        private Product _p1;
+        private List<Guid> _products;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            IDataRepository _dataRepository = new DataRepository(new ConstDataFiller());
-            _dataService = new DataService(_dataRepository);
+            IDataRepository dataRepository = new DataRepository(new ConstDataFiller());
+            _dataService = new DataService(dataRepository);
             _c1 = new Client("Norbert", "Gierczak", "krzycz@disunio.pl", "Katowice");
             _p1 = new Product(Guid.NewGuid(), "Topór", "Broń ostra, można nią rzucać", "Broń");
             _o1 = new Offer(_p1, 450.00m, 0.23m, 5);
-            _e1 = new Facture(Guid.NewGuid(), _c1, _o1, 1, DateTimeOffset.Now.AddDays(-2));
-            _emails = _dataRepository.GetAllClients().Select(c => c.Email).ToList();
-            _products = _dataRepository.GetAllProducts().Select(p => p.Id).ToList();
-            _factures = _dataRepository.GetAllFactures().Select(f => f.Id).ToList();
-            _returns = _dataRepository.GetAllReturns().Select(r => r.Id).ToList();
+            _emails = dataRepository.GetAllClients().Select(c => c.Email).ToList();
+            _products = dataRepository.GetAllProducts().Select(p => p.Id).ToList();
+            _factures = dataRepository.GetAllFactures().Select(f => f.Id).ToList();
         }
 
         [TestMethod]
@@ -67,7 +63,7 @@ namespace Store.Tests
         public void DeleteProduct_Test_Successful()
         {
             AddProduct_Test_Succesful();
-            Assert.ThrowsException<ArgumentException>(() => AddProduct_Test_Succesful());
+            Assert.ThrowsException<ArgumentException>(AddProduct_Test_Succesful);
             _dataService.DeleteProduct(_p1.Id);
             AddProduct_Test_Succesful();
         }
@@ -76,7 +72,7 @@ namespace Store.Tests
         public void DeleteOffer_Test()
         {
             AddOffer_Test_Succesful();
-            Assert.ThrowsException<ArgumentException>(() => AddOffer_Test_Succesful());
+            Assert.ThrowsException<ArgumentException>(AddOffer_Test_Succesful);
             _dataService.DeleteOffer(_o1.Product.Id);
             _dataService.DeleteProduct(_p1.Id);
             AddOffer_Test_Succesful();
@@ -116,7 +112,7 @@ namespace Store.Tests
         [TestMethod]
         public void ReturnProducts_Test_Successful()
         {
-            Assert.AreEqual(0 ,_dataService.GetReturnsForClient(_emails[0]).Count());
+            Assert.AreEqual(0, _dataService.GetReturnsForClient(_emails[0]).Count());
             Assert.AreEqual(2, _dataService.GetFacturesForProduct(_products[1]).Count());
             Assert.AreEqual(3, _dataService.GetFacturesForClient(_emails[0]).Count());
             Assert.AreEqual(5, _dataService.GetProductSales(_products[1]).Item1);
