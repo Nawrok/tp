@@ -6,8 +6,8 @@ namespace Store.DAL
 {
     public interface IDataRepository : ICrudRepository
     {
-        IEnumerable<Facture> GetFactures();
-        IEnumerable<Return> GetReturns();
+        IEnumerable<Facture> GetAllFactures();
+        IEnumerable<Return> GetAllReturns();
         IEnumerable<Event> GetEventsInTime(DateTimeOffset startDate, DateTimeOffset endDate);
         IEnumerable<Client> GetClientsFromCity(string city);
         IEnumerable<Product> GetTheSameTypeProducts(string type);

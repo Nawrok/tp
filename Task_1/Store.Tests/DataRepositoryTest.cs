@@ -75,7 +75,7 @@ namespace Store.Tests
         public void AddEvent_Test_SuccessfulFacture()
         {
             AddEvent_Test_Successful();
-            Assert.AreEqual(2 * EventNumber / 3 + 1, _dataRepository.GetFactures().Count());
+            Assert.AreEqual(2 * EventNumber / 3 + 1, _dataRepository.GetAllFactures().Count());
         }
 
         [TestMethod]
@@ -85,7 +85,7 @@ namespace Store.Tests
             var r1 = new Return(_e1 as Facture, DateTimeOffset.Now);
             _dataRepository.UpdateEvent(r1.Id, r1);
             Assert.AreEqual(r1.Id, _dataRepository.GetEvent(r1.Id).Id);
-            Assert.AreEqual(EventNumber / 3 + 1, _dataRepository.GetReturns().Count());
+            Assert.AreEqual(EventNumber / 3 + 1, _dataRepository.GetAllReturns().Count());
         }
 
         [TestMethod]
@@ -287,14 +287,14 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void UpdateClient_Test_WrongEmail()
+        public void UpdateClient_Test_InvalidEmail()
         {
             AddClient_Test_Successful();
             Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateClient("mkrasucki@gmail.pl", _c1));
         }
 
         [TestMethod]
-        public void UpdateClient_Test_WrongClient()
+        public void UpdateClient_Test_InvalidClient()
         {
             AddClient_Test_Successful();
             Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateClient("mkrasucki@gmail.com", _dataRepository.GetAllClients().First()));
@@ -322,14 +322,14 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void UpdateEvent_Test_WrongId()
+        public void UpdateEvent_Test_InvalidId()
         {
             AddEvent_Test_Successful();
             Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateEvent(Guid.NewGuid(), _e1));
         }
 
         [TestMethod]
-        public void UpdateEvent_Test_WrongEvent()
+        public void UpdateEvent_Test_InvalidEvent()
         {
             AddEvent_Test_Successful();
             Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateEvent(_e1.Id, _dataRepository.GetAllEvents().First()));
@@ -356,14 +356,14 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void UpdateOffer_Test_WrongId()
+        public void UpdateOffer_Test_InvalidId()
         {
             AddOffer_Test_Successful();
             Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateOffer(Guid.NewGuid(), _o1));
         }
 
         [TestMethod]
-        public void UpdateOffer_Test_WrongOffer()
+        public void UpdateOffer_Test_InvalidOffer()
         {
             AddOffer_Test_Successful();
             Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateOffer(_o1.Product.Id, _dataRepository.GetAllOffers().First()));
@@ -383,14 +383,14 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void UpdateProduct_Test_WrongId()
+        public void UpdateProduct_Test_InvalidId()
         {
             AddProduct_Test_Successful();
             Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateProduct(Guid.NewGuid(), _p1));
         }
 
         [TestMethod]
-        public void UpdateProduct_Test_WrongProduct()
+        public void UpdateProduct_Test_InvalidProduct()
         {
             AddProduct_Test_Successful();
             Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateProduct(_p1.Id, _dataRepository.GetAllProducts().First()));
@@ -399,13 +399,13 @@ namespace Store.Tests
         [TestMethod]
         public void GetFactures_Test()
         {
-            Assert.AreEqual(2 * EventNumber / 3, _dataRepository.GetFactures().Count());
+            Assert.AreEqual(2 * EventNumber / 3, _dataRepository.GetAllFactures().Count());
         }
 
         [TestMethod]
         public void GetReturns_Test()
         {
-            Assert.AreEqual(EventNumber / 3, _dataRepository.GetReturns().Count());
+            Assert.AreEqual(EventNumber / 3, _dataRepository.GetAllReturns().Count());
         }
 
         [TestMethod]

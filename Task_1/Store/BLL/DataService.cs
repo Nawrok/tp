@@ -108,36 +108,36 @@ namespace Store.BLL
             _dataRepository.UpdateOffer(productId, offer);
         }
 
-        public IEnumerable<Facture> GetFacturesForClient(Client client)
+        public IEnumerable<Facture> GetFacturesForClient(string email)
         {
-            return _dataRepository.GetFactures().Where(f => f.Client.Email.Equals(client.Email));
+            return _dataRepository.GetAllFactures().Where(f => f.Client.Email.Equals(email));
         }
 
-        public IEnumerable<Return> GetReturnsForClient(Client client)
+        public IEnumerable<Return> GetReturnsForClient(string email)
         {
-            return _dataRepository.GetReturns().Where(f => f.Client.Email.Equals(client.Email));
+            return _dataRepository.GetAllReturns().Where(f => f.Client.Email.Equals(email));
         }
 
-        public IEnumerable<Facture> GetFacturesForProduct(Product product)
+        public IEnumerable<Facture> GetFacturesForProduct(Guid productId)
         {
-            return _dataRepository.GetFactures().Where(f => f.Offer.Product.Id.Equals(product.Id));
+            return _dataRepository.GetAllFactures().Where(f => f.Offer.Product.Id.Equals(productId));
         }
 
-        public IEnumerable<Client> GetClientsForProduct(Product product)
+        public IEnumerable<Client> GetClientsForProduct(Guid productId)
         {
-            var clientEmails = GetFacturesForProduct(product).Select(f => f.Client.Email).Distinct();
+            var clientEmails = GetFacturesForProduct(productId).Select(f => f.Client.Email).Distinct();
             return clientEmails.Select(email => _dataRepository.GetAllClients().First(c => c.Email.Equals(email)));
         }
 
-        public IEnumerable<Product> GetBoughtProductsForClient(Client client)
+        public IEnumerable<Product> GetBoughtProductsForClient(string email)
         {
-            return GetFacturesForClient(client).Select(f => f.Offer.Product);
+            return GetFacturesForClient(email).Select(f => f.Offer.Product);
         }
 
-        public ValueTuple<int, decimal> GetProductSales(Product product)
+        public ValueTuple<int, decimal> GetProductSales(Guid productId)
         {
-            var productCount = GetFacturesForProduct(product).Sum(f => f.ProductCount);
-            var totalSales = GetFacturesForProduct(product).Sum(f => f.GrossPrice);
+            var productCount = GetFacturesForProduct(productId).Sum(f => f.ProductCount);
+            var totalSales = GetFacturesForProduct(productId).Sum(f => f.GrossPrice);
             return (productCount, totalSales);
         }
     }

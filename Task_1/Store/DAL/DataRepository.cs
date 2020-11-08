@@ -9,12 +9,12 @@ namespace Store.DAL
     {
         public DataRepository(IDataFiller dataFiller) : base(dataFiller) { }
 
-        public IEnumerable<Facture> GetFactures()
+        public IEnumerable<Facture> GetAllFactures()
         {
             return GetAllEvents().Where(e => e is Facture).Cast<Facture>();
         }
 
-        public IEnumerable<Return> GetReturns()
+        public IEnumerable<Return> GetAllReturns()
         {
             return GetAllEvents().Where(e => e is Return).Cast<Return>();
         }
