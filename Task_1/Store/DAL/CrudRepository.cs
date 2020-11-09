@@ -19,7 +19,7 @@ namespace Store.DAL
         {
             if (_dataContext.Clients.Any(c => c.Email.Equals(client.Email)))
             {
-                throw new ArgumentException($"Client '{client.Email}' already exists!");
+                throw new ArgumentException($"Client with email '{client.Email}' already exists!");
             }
 
             _dataContext.Clients.Add(client);
@@ -59,7 +59,7 @@ namespace Store.DAL
         {
             if (_dataContext.Products.ContainsKey(product.Id))
             {
-                throw new ArgumentException($"Product '${product.Id}' already exists!");
+                throw new ArgumentException($"Product with id '${product.Id}' already exists!");
             }
 
             _dataContext.Products.Add(product.Id, product);
@@ -69,7 +69,7 @@ namespace Store.DAL
         {
             if (!_dataContext.Clients.Remove(client))
             {
-                throw new ArgumentException($"Client '{client.Email}' does not exist!");
+                throw new ArgumentException($"Client with email '{client.Email}' does not exist!");
             }
         }
 
@@ -98,7 +98,7 @@ namespace Store.DAL
 
             if (!_dataContext.Products.Remove(product.Id))
             {
-                throw new ArgumentException($"Product '{product.Id}' does not exist!");
+                throw new ArgumentException($"Product with id '{product.Id}' does not exist!");
             }
         }
 
