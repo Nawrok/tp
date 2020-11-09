@@ -9,10 +9,10 @@ namespace Store.DAL.Model
             BoughtProducts = boughtProducts;
             GrossPrice = BoughtProducts * (Offer.NetPrice + Offer.NetPrice * Offer.Tax);
         }
-        
+
         public int BoughtProducts { get; }
         public decimal GrossPrice { get; }
-        
+
         public override string ToString()
         {
             return base.ToString() + $" | BoughtProducts: {BoughtProducts} | GrossPrice: {GrossPrice}";

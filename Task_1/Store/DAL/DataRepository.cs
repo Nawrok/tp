@@ -21,7 +21,7 @@ namespace Store.DAL
 
         public IEnumerable<Event> GetEventsInTime(DateTimeOffset startDate, DateTimeOffset endDate)
         {
-            return GetAllEvents().Where(f => f.PurchaseDate >= startDate && f.PurchaseDate <= endDate);
+            return GetAllEvents().Where(e => e.Date >= startDate && e.Date <= endDate);
         }
 
         public IEnumerable<Client> GetClientsFromCity(string city)

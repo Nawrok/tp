@@ -37,11 +37,6 @@ namespace Store.DAL
                 throw new InvalidDataException("Event refers to client/offer that is not in repository!");
             }
 
-            if (evt is Return returned && returned.ReturnDate < returned.PurchaseDate)
-            {
-                throw new InvalidDataException("Return date must be greater than purchase date!");
-            }
-
             _dataContext.Events.Add(evt);
         }
 
@@ -192,11 +187,6 @@ namespace Store.DAL
             if (!IsReferringToOffer(evt) || !IsReferringToClient(evt))
             {
                 throw new InvalidDataException("Event refers to client/offer that is not in repository!");
-            }
-
-            if (evt is Return returned && returned.ReturnDate < returned.PurchaseDate)
-            {
-                throw new InvalidDataException("Return date must be greater than purchase date!");
             }
 
             var curEvent = GetEvent(eventId);
