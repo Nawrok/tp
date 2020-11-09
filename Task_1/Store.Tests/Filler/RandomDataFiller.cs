@@ -48,30 +48,30 @@ namespace Store.Tests.Filler
                 repository.AddOffer(offer);
             }
 
-            for (var i = 0; i < _eventNumber; i++)
+            for (var i = 0; i < 2 * _eventNumber / 3; i++)
             {
                 var facture = new Facture(
                     Guid.NewGuid(),
                     repository.GetAllClients().ToArray()[Random.Next(0, _clientNumber)],
                     repository.GetAllOffers().ToArray()[Random.Next(0, _productNumber)],
-                    Random.Next(1, 20),
-                    DateTimeOffset.Now.AddDays(Random.Next(-360, -30)).AddHours(Random.Next(-12, 12)));
+                    DateTimeOffset.Now.AddDays(Random.Next(-360, -30)).AddHours(Random.Next(-12, 12)),
+                    Random.Next(1, 20));
                 repository.AddEvent(facture);
             }
 
             for (var i = 0; i < _eventNumber / 3; i++)
             {
-                var factures = repository.GetAllEvents().Where(e => e is Facture).ToArray();
-                var evt = factures[Random.Next(0, factures.Length)];
-                var returned = new Return(evt as Facture, evt.PurchaseDate.AddDays(Random.Next(1, 30)));
-                repository.UpdateEvent(returned.Id, returned);
+                var factures = repository.GetAllEvents().Where(e => e is Facture).Cast<Facture>().ToArray();
+                var f = factures[Random.Next(0, factures.Length)];
+                var returned = new Return(Guid.NewGuid(), f, f.Date.AddDays(Random.Next(1, 30)), Random.Next(1, f.BoughtProducts + 1));
+                repository.AddEvent(returned);
             }
         }
 
-        private static string GetRandStr(int length)
+        private static string GetRandStr(int len)
         {
             const string chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
-            return new string(Enumerable.Repeat(chars, length)
+            return new string(Enumerable.Repeat(chars, len)
                 .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
     }

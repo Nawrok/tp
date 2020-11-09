@@ -14,20 +14,20 @@ namespace Store.Tests
         private const int ClientNumber = 5;
         private const int ProductNumber = 10;
         private const int EventNumber = 15;
-        private Client _c1;
+        private Client _client;
         private IDataRepository _dataRepository;
-        private Event _e1;
-        private Offer _o1;
-        private Product _p1;
+        private Facture _facture;
+        private Offer _offer;
+        private Product _product;
 
         [TestInitialize]
         public void TestInitialize()
         {
             _dataRepository = new DataRepository(new RandomDataFiller(ClientNumber, ProductNumber, EventNumber));
-            _c1 = new Client("Marcin", "Krasucki", "mkrasucki@gmail.com", "Piotrków Trybunalski");
-            _p1 = new Product(Guid.NewGuid(), "Kierownica", "Taka do komputera", "Elektronika");
-            _o1 = new Offer(_p1, 300.00m, 0.23m, 2);
-            _e1 = new Facture(Guid.NewGuid(), _c1, _o1, 1, DateTimeOffset.Now);
+            _client = new Client("Marcin", "Krasucki", "mkrasucki@gmail.com", "Piotrków Trybunalski");
+            _product = new Product(Guid.NewGuid(), "Kierownica", "Taka do komputera", "Elektronika");
+            _offer = new Offer(_product, 300.00m, 0.23m, 2);
+            _facture = new Facture(Guid.NewGuid(), _client, _offer, DateTimeOffset.Now, 1);
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace Store.Tests
         [TestMethod]
         public void AddClient_Test_Successful()
         {
-            _dataRepository.AddClient(_c1);
+            _dataRepository.AddClient(_client);
             Assert.AreEqual(ClientNumber + 1, _dataRepository.GetAllClients().Count());
             Assert.AreEqual("mkrasucki@gmail.com", _dataRepository.GetClient("mkrasucki@gmail.com").Email);
         }
@@ -50,25 +50,25 @@ namespace Store.Tests
         [TestMethod]
         public void AddClient_Test_AlreadyAddedClient()
         {
-            _dataRepository.AddClient(_c1);
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.AddClient(_c1));
+            _dataRepository.AddClient(_client);
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.AddClient(_client));
         }
 
         [TestMethod]
         public void AddEvent_Test_ClientOrOfferNotInRepo()
         {
-            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.AddEvent(_e1));
+            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.AddEvent(_facture));
         }
 
         [TestMethod]
         public void AddEvent_Test_Successful()
         {
-            _dataRepository.AddClient(_c1);
-            _dataRepository.AddProduct(_p1);
-            _dataRepository.AddOffer(_o1);
-            _dataRepository.AddEvent(_e1);
+            _dataRepository.AddClient(_client);
+            _dataRepository.AddProduct(_product);
+            _dataRepository.AddOffer(_offer);
+            _dataRepository.AddEvent(_facture);
             Assert.AreEqual(EventNumber + 1, _dataRepository.GetAllEvents().Count());
-            Assert.AreEqual(_e1.Id, _dataRepository.GetEvent(_e1.Id).Id);
+            Assert.AreEqual(_facture.Id, _dataRepository.GetEvent(_facture.Id).Id);
         }
 
         [TestMethod]
@@ -82,8 +82,8 @@ namespace Store.Tests
         public void AddEvent_Test_SuccessfulReturn()
         {
             AddEvent_Test_Successful();
-            var r1 = new Return(_e1 as Facture, DateTimeOffset.Now);
-            _dataRepository.UpdateEvent(r1.Id, r1);
+            var r1 = new Return(Guid.NewGuid(), _facture, DateTimeOffset.Now, _facture.BoughtProducts);
+            _dataRepository.AddEvent(r1);
             Assert.AreEqual(r1.Id, _dataRepository.GetEvent(r1.Id).Id);
             Assert.AreEqual(EventNumber / 3 + 1, _dataRepository.GetAllReturns().Count());
         }
@@ -91,73 +91,62 @@ namespace Store.Tests
         [TestMethod]
         public void AddEvent_Test_AlreadyAddedEvent()
         {
-            _dataRepository.AddClient(_c1);
-            _dataRepository.AddProduct(_p1);
-            _dataRepository.AddOffer(_o1);
-            _dataRepository.AddEvent(_e1);
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.AddEvent(_e1));
-        }
-
-        [TestMethod]
-        public void AddEvent_Test_ReturnDateIsOlderThanPurchaseDate()
-        {
-            _dataRepository.AddClient(_c1);
-            _dataRepository.AddProduct(_p1);
-            _dataRepository.AddOffer(_o1);
-            _dataRepository.AddEvent(_e1);
-            var r1 = new Return(_e1 as Facture, DateTimeOffset.Now.AddDays(-7));
-            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.UpdateEvent(r1.Id, r1));
+            _dataRepository.AddClient(_client);
+            _dataRepository.AddProduct(_product);
+            _dataRepository.AddOffer(_offer);
+            _dataRepository.AddEvent(_facture);
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.AddEvent(_facture));
         }
 
         [TestMethod]
         public void AddOffer_Test_ProductNotInRepo()
         {
-            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.AddOffer(_o1));
+            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.AddOffer(_offer));
         }
 
         [TestMethod]
         public void AddOffer_Test_Successful()
         {
-            _dataRepository.AddProduct(_p1);
-            _dataRepository.AddOffer(_o1);
+            _dataRepository.AddProduct(_product);
+            _dataRepository.AddOffer(_offer);
             Assert.AreEqual(ProductNumber + 1, _dataRepository.GetAllOffers().Count());
-            Assert.AreEqual(_p1.Id, _dataRepository.GetOffer(_o1.Product.Id).Product.Id);
+            Assert.AreEqual(_product.Id, _dataRepository.GetOffer(_offer.Product.Id).Product.Id);
         }
 
         [TestMethod]
         public void AddOffer_Test_AlreadyAddedOffer()
         {
-            _dataRepository.AddProduct(_p1);
-            _dataRepository.AddOffer(_o1);
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.AddOffer(_o1));
+            _dataRepository.AddProduct(_product);
+            _dataRepository.AddOffer(_offer);
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.AddOffer(_offer));
         }
 
         [TestMethod]
         public void AddProduct_Test_Successful()
         {
-            _dataRepository.AddProduct(_p1);
+            _dataRepository.AddProduct(_product);
             Assert.AreEqual(ProductNumber + 1, _dataRepository.GetAllProducts().Count());
-            Assert.AreEqual(_p1.Id, _dataRepository.GetProduct(_p1.Id).Id);
+            Assert.AreEqual(_product.Id, _dataRepository.GetProduct(_product.Id).Id);
         }
 
         [TestMethod]
         public void AddProduct_Test_AlreadyAddedProduct()
         {
-            _dataRepository.AddProduct(_p1);
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.AddProduct(_p1));
+            _dataRepository.AddProduct(_product);
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.AddProduct(_product));
         }
 
         [TestMethod]
         public void DeleteClient_Test_ClientNotInRepo()
         {
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.DeleteClient(_c1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.DeleteClient(_client));
         }
 
         [TestMethod]
         public void DeleteClient_Test_Successful()
         {
             AddClient_Test_Successful();
-            _dataRepository.DeleteClient(_c1);
+            _dataRepository.DeleteClient(_client);
             Assert.AreEqual(ClientNumber, _dataRepository.GetAllClients().Count());
             Assert.AreNotEqual("mkrasucki@gmail.com", _dataRepository.GetAllClients().Any(c => c.Email.Equals("mkrasucki@gmail.com")));
         }
@@ -165,60 +154,60 @@ namespace Store.Tests
         [TestMethod]
         public void DeleteEvent_Test_EventNotInRepo()
         {
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.DeleteEvent(_e1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.DeleteEvent(_facture));
         }
 
         [TestMethod]
         public void DeleteEvent_Test_Successful()
         {
             AddEvent_Test_SuccessfulFacture();
-            _dataRepository.DeleteEvent(_e1);
+            _dataRepository.DeleteEvent(_facture);
             Assert.AreEqual(EventNumber, _dataRepository.GetAllEvents().Count());
-            Assert.AreNotEqual(_e1.Id, _dataRepository.GetAllEvents().Any(e => e.Id.Equals(_e1.Id)));
+            Assert.AreNotEqual(_facture.Id, _dataRepository.GetAllEvents().Any(e => e.Id.Equals(_facture.Id)));
         }
 
         [TestMethod]
         public void DeleteOffer_Test_ProductNotInRepo()
         {
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.DeleteOffer(_o1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.DeleteOffer(_offer));
         }
 
         [TestMethod]
         public void DeleteOffer_Test_OfferNotInRepo()
         {
             AddProduct_Test_Successful();
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.DeleteOffer(_o1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.DeleteOffer(_offer));
         }
 
         [TestMethod]
         public void DeleteOffer_Test_Successful()
         {
             AddOffer_Test_Successful();
-            _dataRepository.DeleteOffer(_o1);
+            _dataRepository.DeleteOffer(_offer);
             Assert.AreEqual(ProductNumber, _dataRepository.GetAllOffers().Count());
-            Assert.AreNotEqual(_p1.Id, _dataRepository.GetAllOffers().Any(o => o.Product.Id.Equals(_p1.Id)));
+            Assert.AreNotEqual(_product.Id, _dataRepository.GetAllOffers().Any(o => o.Product.Id.Equals(_product.Id)));
         }
 
         [TestMethod]
         public void DeleteProduct_Test_ProductNotInRepo()
         {
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.DeleteProduct(_p1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.DeleteProduct(_product));
         }
 
         [TestMethod]
         public void DeleteProduct_Test_OfferInRepo()
         {
             AddOffer_Test_Successful();
-            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.DeleteProduct(_p1));
+            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.DeleteProduct(_product));
         }
 
         [TestMethod]
         public void DeleteProduct_Test_Successful()
         {
             AddProduct_Test_Successful();
-            _dataRepository.DeleteProduct(_p1);
+            _dataRepository.DeleteProduct(_product);
             Assert.AreEqual(ProductNumber, _dataRepository.GetAllProducts().Count());
-            Assert.AreNotEqual(_p1.Id, _dataRepository.GetAllProducts().Any(p => p.Id.Equals(_p1.Id)));
+            Assert.AreNotEqual(_product.Id, _dataRepository.GetAllProducts().Any(p => p.Id.Equals(_product.Id)));
         }
 
         [TestMethod]
@@ -246,51 +235,75 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void GetClient_Test()
+        public void GetClient_Test_Successful()
         {
             AddClient_Test_Successful();
             Assert.AreEqual("mkrasucki@gmail.com", _dataRepository.GetClient("mkrasucki@gmail.com").Email);
         }
 
         [TestMethod]
-        public void GetEvent_Test()
+        public void GetClient_Test_ClientNotInRepo()
+        {
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.GetClient(_client.Email));
+        }
+
+        [TestMethod]
+        public void GetEvent_Test_Successful()
         {
             AddEvent_Test_Successful();
-            Assert.AreEqual(_e1.Id, _dataRepository.GetEvent(_e1.Id).Id);
+            Assert.AreEqual(_facture.Id, _dataRepository.GetEvent(_facture.Id).Id);
         }
 
         [TestMethod]
-        public void GetOffer_Test()
+        public void GetEvent_Test_EventNotInRepo()
+        {
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.GetEvent(_facture.Id));
+        }
+
+        [TestMethod]
+        public void GetOffer_Test_Successful()
         {
             AddOffer_Test_Successful();
-            Assert.AreEqual(_p1.Id, _dataRepository.GetOffer(_o1.Product.Id).Product.Id);
+            Assert.AreEqual(_product.Id, _dataRepository.GetOffer(_offer.Product.Id).Product.Id);
         }
 
         [TestMethod]
-        public void GetProduct_Test()
+        public void GetOffer_Test_OfferNotInRepo()
+        {
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.GetOffer(_offer.Product.Id));
+        }
+
+        [TestMethod]
+        public void GetProduct_Test_Successful()
         {
             AddProduct_Test_Successful();
-            Assert.AreEqual(_p1.Id, _dataRepository.GetProduct(_p1.Id).Id);
+            Assert.AreEqual(_product.Id, _dataRepository.GetProduct(_product.Id).Id);
+        }
+
+        [TestMethod]
+        public void GetProduct_Test_ProductNotInRepo()
+        {
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.GetProduct(_product.Id));
         }
 
         [TestMethod]
         public void UpdateClient_Test_ClientNotInRepo()
         {
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateClient("mkrasucki@gmail.com", _c1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateClient("mkrasucki@gmail.com", _client));
         }
 
         [TestMethod]
         public void UpdateClient_Test_Successful()
         {
             AddClient_Test_Successful();
-            _dataRepository.UpdateClient("mkrasucki@gmail.com", _c1);
+            _dataRepository.UpdateClient("mkrasucki@gmail.com", _client);
         }
 
         [TestMethod]
         public void UpdateClient_Test_InvalidEmail()
         {
             AddClient_Test_Successful();
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateClient("mkrasucki@gmail.pl", _c1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateClient("mkrasucki@gmail.pl", _client));
         }
 
         [TestMethod]
@@ -303,7 +316,7 @@ namespace Store.Tests
         [TestMethod]
         public void UpdateEvent_Test_ClientOrOfferNotInRepo()
         {
-            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.UpdateEvent(_e1.Id, _e1));
+            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.UpdateEvent(_facture.Id, _facture));
         }
 
         [TestMethod]
@@ -311,89 +324,89 @@ namespace Store.Tests
         {
             AddClient_Test_Successful();
             AddOffer_Test_Successful();
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateEvent(_e1.Id, _e1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateEvent(_facture.Id, _facture));
         }
 
         [TestMethod]
         public void UpdateEvent_Test_Successful()
         {
             AddEvent_Test_Successful();
-            _dataRepository.UpdateEvent(_e1.Id, _e1);
+            _dataRepository.UpdateEvent(_facture.Id, _facture);
         }
 
         [TestMethod]
         public void UpdateEvent_Test_InvalidId()
         {
             AddEvent_Test_Successful();
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateEvent(Guid.NewGuid(), _e1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateEvent(Guid.NewGuid(), _facture));
         }
 
         [TestMethod]
         public void UpdateEvent_Test_InvalidEvent()
         {
             AddEvent_Test_Successful();
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateEvent(_e1.Id, _dataRepository.GetAllEvents().First()));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateEvent(_facture.Id, _dataRepository.GetAllEvents().First()));
         }
 
         [TestMethod]
         public void UpdateOffer_Test_ProductNotInRepo()
         {
-            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.UpdateOffer(_o1.Product.Id, _o1));
+            Assert.ThrowsException<InvalidDataException>(() => _dataRepository.UpdateOffer(_offer.Product.Id, _offer));
         }
 
         [TestMethod]
         public void UpdateOffer_Test_OfferNotInRepo()
         {
             AddProduct_Test_Successful();
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateOffer(_o1.Product.Id, _o1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateOffer(_offer.Product.Id, _offer));
         }
 
         [TestMethod]
         public void UpdateOffer_Test_Successful()
         {
             AddOffer_Test_Successful();
-            _dataRepository.UpdateOffer(_o1.Product.Id, _o1);
+            _dataRepository.UpdateOffer(_offer.Product.Id, _offer);
         }
 
         [TestMethod]
         public void UpdateOffer_Test_InvalidId()
         {
             AddOffer_Test_Successful();
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateOffer(Guid.NewGuid(), _o1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateOffer(Guid.NewGuid(), _offer));
         }
 
         [TestMethod]
         public void UpdateOffer_Test_InvalidOffer()
         {
             AddOffer_Test_Successful();
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateOffer(_o1.Product.Id, _dataRepository.GetAllOffers().First()));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateOffer(_offer.Product.Id, _dataRepository.GetAllOffers().First()));
         }
 
         [TestMethod]
         public void UpdateProduct_Test_ProductNotInRepo()
         {
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateProduct(_p1.Id, _p1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateProduct(_product.Id, _product));
         }
 
         [TestMethod]
         public void UpdateProduct_Test_Successful()
         {
             AddProduct_Test_Successful();
-            _dataRepository.UpdateProduct(_p1.Id, _p1);
+            _dataRepository.UpdateProduct(_product.Id, _product);
         }
 
         [TestMethod]
         public void UpdateProduct_Test_InvalidId()
         {
             AddProduct_Test_Successful();
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateProduct(Guid.NewGuid(), _p1));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateProduct(Guid.NewGuid(), _product));
         }
 
         [TestMethod]
         public void UpdateProduct_Test_InvalidProduct()
         {
             AddProduct_Test_Successful();
-            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateProduct(_p1.Id, _dataRepository.GetAllProducts().First()));
+            Assert.ThrowsException<ArgumentException>(() => _dataRepository.UpdateProduct(_product.Id, _dataRepository.GetAllProducts().First()));
         }
 
         [TestMethod]
@@ -423,7 +436,7 @@ namespace Store.Tests
             var c = new Client("Norbert", "Gierczak", "krzycz@disunio.pl", "Katowice");
             var p = new Product(Guid.NewGuid(), "Topór", "Broń ostra, można nią rzucać", "Broń");
             var o = new Offer(p, 450.00m, 0.23m, 2);
-            var e = new Facture(Guid.NewGuid(), c, o, 1, DateTimeOffset.Now.AddDays(-2));
+            var e = new Facture(Guid.NewGuid(), c, o, DateTimeOffset.Now.AddDays(-2), 1);
             _dataRepository.AddClient(c);
             _dataRepository.AddProduct(p);
             _dataRepository.AddOffer(o);
