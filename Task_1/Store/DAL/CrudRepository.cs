@@ -29,7 +29,7 @@ namespace Store.DAL
         {
             if (_dataContext.Events.Any(e => e.Id.Equals(evt.Id)))
             {
-                throw new ArgumentException($"{evt.GetType().Name} '{evt.Id}' already exists!");
+                throw new ArgumentException($"{evt.GetType().Name} with id '{evt.Id}' already exists!");
             }
 
             if (!IsReferringToClient(evt) || !IsReferringToOffer(evt))
@@ -65,41 +65,53 @@ namespace Store.DAL
             _dataContext.Products.Add(product.Id, product);
         }
 
-        public void DeleteClient(Client client)
+        public void DeleteClient(string email)
         {
-            if (!_dataContext.Clients.Remove(client))
+            var curClient = GetClient(email);
+            if (curClient == null)
             {
-                throw new ArgumentException($"Client with email '{client.Email}' does not exist!");
+                throw new ArgumentException($"Client with email '{email}' does not exist!");
             }
+
+            _dataContext.Clients.Remove(curClient);
         }
 
-        public void DeleteEvent(Event evt)
+        public void DeleteEvent(Guid eventId)
         {
-            if (!_dataContext.Events.Remove(evt))
+            var curEvent = GetEvent(eventId);
+            if (curEvent == null)
             {
-                throw new ArgumentException($"{evt.GetType().Name} '{evt.Id}' does not exist!");
+                throw new ArgumentException($"Event with id '{eventId}' does not exist!");
             }
+
+            _dataContext.Events.Remove(curEvent);
         }
 
-        public void DeleteOffer(Offer offer)
+        public void DeleteOffer(Guid productId)
         {
-            if (!_dataContext.Offers.Remove(offer))
+            var curOffer = GetOffer(productId);
+            if (curOffer == null)
             {
-                throw new ArgumentException($"Offer for product '{offer.Product.Name}' does not exist!");
+                throw new ArgumentException($"Offer for product with id '{productId}' does not exist!");
             }
+
+            _dataContext.Offers.Remove(curOffer);
         }
 
-        public void DeleteProduct(Product product)
+        public void DeleteProduct(Guid productId)
         {
-            if (IsReferringToOffer(product))
+            var curProduct = GetProduct(productId);
+            if (curProduct == null)
             {
-                throw new InvalidDataException("Product refers to offer that is in repository!");
+                throw new ArgumentException($"Product with id '{productId}' does not exist!");
             }
 
-            if (!_dataContext.Products.Remove(product.Id))
+            if (IsReferringToOffer(curProduct))
             {
-                throw new ArgumentException($"Product with id '{product.Id}' does not exist!");
+                throw new InvalidDataException($"Product with id '{productId}' refers to offer that is in repository!");
             }
+
+            _dataContext.Products.Remove(productId);
         }
 
         public IEnumerable<Client> GetAllClients()
@@ -124,56 +136,38 @@ namespace Store.DAL
 
         public Client GetClient(string email)
         {
-            var curClient = _dataContext.Clients.FirstOrDefault(c => c.Email.Equals(email));
-            if (curClient == null)
-            {
-                throw new ArgumentException($"Client with email '{email}' does not exist!");
-            }
-
-            return curClient;
+            return _dataContext.Clients.FirstOrDefault(c => c.Email.Equals(email));
         }
 
         public Event GetEvent(Guid eventId)
         {
-            var curEvent = _dataContext.Events.FirstOrDefault(e => e.Id.Equals(eventId));
-            if (curEvent == null)
-            {
-                throw new ArgumentException($"Event with id '{eventId}' does not exist!");
-            }
-
-            return curEvent;
+            return _dataContext.Events.FirstOrDefault(e => e.Id.Equals(eventId));
         }
 
         public Offer GetOffer(Guid productId)
         {
-            var curOffer = _dataContext.Offers.FirstOrDefault(o => o.Product.Id.Equals(productId));
-            if (curOffer == null)
-            {
-                throw new ArgumentException($"Offer with product id '{productId}' does not exist!");
-            }
-
-            return curOffer;
+            return _dataContext.Offers.FirstOrDefault(o => o.Product.Id.Equals(productId));
         }
 
         public Product GetProduct(Guid productId)
         {
-            var curProduct = _dataContext.Products.FirstOrDefault(p => p.Key.Equals(productId)).Value;
-            if (curProduct == null)
-            {
-                throw new ArgumentException($"Product with id '{productId}' does not exist!");
-            }
-
-            return curProduct;
+            return _dataContext.Products.FirstOrDefault(p => p.Key.Equals(productId)).Value;
         }
 
         public void UpdateClient(string email, Client client)
         {
             if (!email.Equals(client.Email))
             {
-                throw new ArgumentException($"Cannot change email '{email}' for client '{client.Email}'!");
+                throw new ArgumentException($"Cannot change email '{email}' for client with email '{client.Email}'!");
             }
 
-            var id = _dataContext.Clients.IndexOf(GetClient(email));
+            var curClient = GetClient(email);
+            if (curClient == null)
+            {
+                throw new ArgumentException($"Client with email '{email}' does not exists!");
+            }
+
+            var id = _dataContext.Clients.IndexOf(curClient);
             _dataContext.Clients[id] = client;
         }
 
@@ -181,7 +175,7 @@ namespace Store.DAL
         {
             if (!eventId.Equals(evt.Id))
             {
-                throw new ArgumentException($"Cannot change id '{eventId}' for event '{evt.Id}'!");
+                throw new ArgumentException($"Cannot change id '{eventId}' for event with id '{evt.Id}'!");
             }
 
             if (!IsReferringToOffer(evt) || !IsReferringToClient(evt))
@@ -190,6 +184,11 @@ namespace Store.DAL
             }
 
             var curEvent = GetEvent(eventId);
+            if (curEvent == null)
+            {
+                throw new ArgumentException($"Event with id '{eventId}' does not exists!");
+            }
+
             var id = _dataContext.Events.IndexOf(curEvent);
             _dataContext.Events[id] = evt;
         }
@@ -198,7 +197,7 @@ namespace Store.DAL
         {
             if (!productId.Equals(offer.Product.Id))
             {
-                throw new ArgumentException($"Cannot change id '{productId}' for this offer!");
+                throw new ArgumentException($"Cannot change product id '{productId}' for this offer!");
             }
 
             if (!IsReferringToProduct(offer))
@@ -207,6 +206,11 @@ namespace Store.DAL
             }
 
             var curOffer = GetOffer(productId);
+            if (curOffer == null)
+            {
+                throw new ArgumentException($"Offer for this product with id '{productId}' does not exists!");
+            }
+
             var id = _dataContext.Offers.IndexOf(curOffer);
             _dataContext.Offers[id] = offer;
         }
@@ -215,12 +219,12 @@ namespace Store.DAL
         {
             if (!productId.Equals(product.Id))
             {
-                throw new ArgumentException($"Cannot change id '{productId}' for product '{product.Id}'!");
+                throw new ArgumentException($"Cannot change id '{productId}' for product with id '{product.Id}'!");
             }
 
             if (!_dataContext.Products.ContainsKey(productId))
             {
-                throw new ArgumentException($"Product '{productId}' does not exist!");
+                throw new ArgumentException($"Product with id '{productId}' does not exist!");
             }
 
             _dataContext.Products[productId] = product;

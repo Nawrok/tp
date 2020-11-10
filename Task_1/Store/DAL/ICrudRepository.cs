@@ -10,10 +10,10 @@ namespace Store.DAL
         void AddEvent(Event evt);
         void AddOffer(Offer offer);
         void AddProduct(Product product);
-        void DeleteClient(Client client);
-        void DeleteEvent(Event evt);
-        void DeleteOffer(Offer offer);
-        void DeleteProduct(Product product);
+        void DeleteClient(string email);
+        void DeleteEvent(Guid eventId);
+        void DeleteOffer(Guid productId);
+        void DeleteProduct(Guid productId);
         IEnumerable<Client> GetAllClients();
         IEnumerable<Event> GetAllEvents();
         IEnumerable<Offer> GetAllOffers();
