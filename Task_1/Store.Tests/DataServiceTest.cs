@@ -53,10 +53,24 @@ namespace Store.Tests
         }
 
         [TestMethod]
-        public void AddOffer_Test_NotPositiveParameters()
+        public void AddOffer_Test_NotPositiveNetPriceValue()
         {
             AddProduct_Test_Succesful();
-            Assert.ThrowsException<ArgumentException>(() => _dataService.AddOffer(_o1.Product.Id, -0.01m, -0.05m, -5));
+            Assert.ThrowsException<ArgumentException>(() => _dataService.AddOffer(_o1.Product.Id, -1m, 0.05m, 5));
+        }
+
+        [TestMethod]
+        public void AddOffer_Test_NotNonNegativeTaxValue()
+        {
+            AddProduct_Test_Succesful();
+            Assert.ThrowsException<ArgumentException>(() => _dataService.AddOffer(_o1.Product.Id, 1m, -0.05m, 5));
+        }
+
+        [TestMethod]
+        public void AddOffer_Test_NotNonNegativeProductsInStockValue()
+        {
+            AddProduct_Test_Succesful();
+            Assert.ThrowsException<ArgumentException>(() => _dataService.AddOffer(_o1.Product.Id, 1m, 0.05m, -5));
         }
 
         [TestMethod]
@@ -94,19 +108,19 @@ namespace Store.Tests
         [TestMethod]
         public void BuyProducts_Test_Successful()
         {
-            Assert.AreEqual(1, _dataService.GetFacturesForProduct(_products[0]).Count());
-            Assert.AreEqual(3, _dataService.GetFacturesForClient(_emails[0]).Count());
-            Assert.AreEqual(5, _dataService.GetProductSales(_products[0]).Item1);
-            _dataService.BuyProducts(_emails[0], _products[0], 15);
             Assert.AreEqual(2, _dataService.GetFacturesForProduct(_products[0]).Count());
+            Assert.AreEqual(3, _dataService.GetFacturesForClient(_emails[0]).Count());
+            Assert.AreEqual(7, _dataService.GetProductSales(_products[0]).Item1);
+            _dataService.BuyProducts(_emails[0], _products[0], 15);
+            Assert.AreEqual(3, _dataService.GetFacturesForProduct(_products[0]).Count());
             Assert.AreEqual(4, _dataService.GetFacturesForClient(_emails[0]).Count());
-            Assert.AreEqual(20, _dataService.GetProductSales(_products[0]).Item1);
+            Assert.AreEqual(22, _dataService.GetProductSales(_products[0]).Item1);
         }
 
         [TestMethod]
         public void ReturnProducts_Test_MoreProductThanBought()
         {
-            Assert.ThrowsException<InvalidOperationException>(() => _dataService.ReturnProducts(_factures[0], 2));
+            Assert.ThrowsException<InvalidOperationException>(() => _dataService.ReturnProducts(_factures[1], 2));
         }
 
         [TestMethod]
@@ -115,18 +129,18 @@ namespace Store.Tests
             Assert.AreEqual(0, _dataService.GetReturnsForClient(_emails[0]).Count());
             Assert.AreEqual(2, _dataService.GetFacturesForProduct(_products[1]).Count());
             Assert.AreEqual(3, _dataService.GetFacturesForClient(_emails[0]).Count());
-            Assert.AreEqual(5, _dataService.GetProductSales(_products[1]).Item1);
-            _dataService.ReturnProducts(_factures[0], 1);
+            Assert.AreEqual(6, _dataService.GetProductSales(_products[1]).Item1);
+            _dataService.ReturnProducts(_factures[1], 1);
             Assert.AreEqual(1, _dataService.GetReturnsForClient(_emails[0]).Count());
-            Assert.AreEqual(1, _dataService.GetFacturesForProduct(_products[1]).Count());
-            Assert.AreEqual(2, _dataService.GetFacturesForClient(_emails[0]).Count());
-            Assert.AreEqual(4, _dataService.GetProductSales(_products[1]).Item1);
+            Assert.AreEqual(1, _dataService.GetReturnsForProduct(_products[1]).Count());
+            Assert.AreEqual(1, _dataService.GetReturnsForClient(_emails[0]).Count());
+            Assert.AreEqual(5, _dataService.GetProductSales(_products[1]).Item1);
         }
 
         [TestMethod]
         public void UpdateOfferState_Test_Successful()
         {
-            Assert.AreEqual(5, _dataService.GetProductSales(_products[0]).Item1);
+            Assert.AreEqual(7, _dataService.GetProductSales(_products[0]).Item1);
             Assert.ThrowsException<InvalidOperationException>(() => _dataService.BuyProducts(_emails[0], _products[0], 41));
             _dataService.UpdateOfferState(_products[0], 45);
             _dataService.BuyProducts(_emails[0], _products[0], 41);
@@ -142,7 +156,7 @@ namespace Store.Tests
         public void GetFacturesForClient_Test()
         {
             Assert.AreEqual(3, _dataService.GetFacturesForClient(_emails[0]).Count());
-            Assert.AreEqual(1, _dataService.GetFacturesForClient(_emails[1]).Count());
+            Assert.AreEqual(2, _dataService.GetFacturesForClient(_emails[1]).Count());
         }
 
         [TestMethod]
@@ -155,7 +169,7 @@ namespace Store.Tests
         [TestMethod]
         public void GetFacturesForProduct_Test()
         {
-            Assert.AreEqual(1, _dataService.GetFacturesForProduct(_products[0]).Count());
+            Assert.AreEqual(2, _dataService.GetFacturesForProduct(_products[0]).Count());
             Assert.AreEqual(2, _dataService.GetFacturesForProduct(_products[1]).Count());
             Assert.AreEqual(1, _dataService.GetFacturesForProduct(_products[2]).Count());
         }
@@ -163,7 +177,7 @@ namespace Store.Tests
         [TestMethod]
         public void GetClientsForProduct_Test()
         {
-            Assert.AreEqual(1, _dataService.GetClientsForProduct(_products[0]).Count());
+            Assert.AreEqual(2, _dataService.GetClientsForProduct(_products[0]).Count());
             Assert.AreEqual(2, _dataService.GetClientsForProduct(_products[1]).Count());
             Assert.AreEqual(1, _dataService.GetClientsForProduct(_products[2]).Count());
         }
@@ -172,18 +186,18 @@ namespace Store.Tests
         public void GetBoughtProductsForClient_Test()
         {
             Assert.AreEqual(3, _dataService.GetBoughtProductsForClient(_emails[0]).Count());
-            Assert.AreEqual(1, _dataService.GetBoughtProductsForClient(_emails[1]).Count());
+            Assert.AreEqual(2, _dataService.GetBoughtProductsForClient(_emails[1]).Count());
         }
 
         [TestMethod]
         public void GetProductSales_Test()
         {
-            Assert.AreEqual(5, _dataService.GetProductSales(_products[0]).Item1);
-            Assert.AreEqual(5.0m * 14.50m * 1.05m, _dataService.GetProductSales(_products[0]).Item2);
-            Assert.AreEqual(5, _dataService.GetProductSales(_products[1]).Item1);
-            Assert.AreEqual(5.0m * 450.00m * 1.23m, _dataService.GetProductSales(_products[1]).Item2);
+            Assert.AreEqual(7, _dataService.GetProductSales(_products[0]).Item1);
+            Assert.AreEqual(10 * 14.50m * 1.05m - 3 * 14.50m * 1.05m, _dataService.GetProductSales(_products[0]).Item2);
+            Assert.AreEqual(6, _dataService.GetProductSales(_products[1]).Item1);
+            Assert.AreEqual(6 * 450.00m * 1.23m, _dataService.GetProductSales(_products[1]).Item2);
             Assert.AreEqual(3, _dataService.GetProductSales(_products[2]).Item1);
-            Assert.AreEqual(3.0m * 1500.00m * 1.23m, _dataService.GetProductSales(_products[2]).Item2);
+            Assert.AreEqual(3 * 1500.00m * 1.23m, _dataService.GetProductSales(_products[2]).Item2);
         }
     }
 }

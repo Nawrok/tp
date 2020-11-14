@@ -436,36 +436,36 @@ namespace Store.Tests
         public void GetClientsFromCity_Test()
         {
             Assert.AreEqual(0, _dataRepository.GetClientsFromCity("Łódź").Count());
-            Assert.AreEqual(0, _dataRepository.GetClientsFromCity("Piotrków Trybunalski").Count());
+            Assert.AreEqual(0, _dataRepository.GetClientsFromCity(_client.City).Count());
             AddClient_Test_Successful();
-            Assert.AreEqual(1, _dataRepository.GetClientsFromCity("Piotrków Trybunalski").Count());
+            Assert.AreEqual(1, _dataRepository.GetClientsFromCity(_client.City).Count());
         }
 
         [TestMethod]
         public void GetClientsFromCity_Test_WithNewClient()
         {
             GetClientsFromCity_Test();
-            var c = new Client("Artur", "Krasucki", "artuuur@interia.pl", "Piotrków Trybunalski");
+            var c = new Client("Artur", "Krasucki", "artuuur@interia.pl", _client.City);
             _dataRepository.AddClient(c);
-            Assert.AreEqual(2, _dataRepository.GetClientsFromCity("Piotrków Trybunalski").Count());
+            Assert.AreEqual(2, _dataRepository.GetClientsFromCity(_client.City).Count());
         }
 
         [TestMethod]
         public void GetTheSameTypeProducts_Test()
         {
             Assert.AreEqual(0, _dataRepository.GetTheSameTypeProducts("Artykuły spożywcze").Count());
-            Assert.AreEqual(0, _dataRepository.GetTheSameTypeProducts("Elektronika").Count());
+            Assert.AreEqual(0, _dataRepository.GetTheSameTypeProducts(_product.Type).Count());
             AddProduct_Test_Successful();
-            Assert.AreEqual(1, _dataRepository.GetTheSameTypeProducts("Elektronika").Count());
+            Assert.AreEqual(1, _dataRepository.GetTheSameTypeProducts(_product.Type).Count());
         }
 
         [TestMethod]
         public void GetTheSameTypeProducts_Test_WithNewProduct()
         {
             GetTheSameTypeProducts_Test();
-            var p = new Product(Guid.NewGuid(), "Xiaomi Redmi Note 7", "Telefon marki Xiaomi", "Elektronika");
+            var p = new Product(Guid.NewGuid(), "Xiaomi Redmi Note 7", "Telefon marki Xiaomi", _product.Type);
             _dataRepository.AddProduct(p);
-            Assert.AreEqual(2, _dataRepository.GetTheSameTypeProducts("Elektronika").Count());
+            Assert.AreEqual(2, _dataRepository.GetTheSameTypeProducts(_product.Type).Count());
         }
     }
 }

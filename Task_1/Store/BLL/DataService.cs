@@ -31,9 +31,19 @@ namespace Store.BLL
 
         public Offer AddOffer(Guid productId, decimal netPrice, decimal tax, int productsInStock)
         {
-            if (netPrice <= 0 || tax < 0 || productsInStock < 0)
+            if (netPrice <= 0)
             {
-                throw new ArgumentException("Price, tax and products in stock must be positive numbers!");
+                throw new ArgumentException("Net price must be positive value!");
+            }
+
+            if (tax < 0)
+            {
+                throw new ArgumentException("Tax must be non-negative value!");
+            }
+
+            if (productsInStock < 0)
+            {
+                throw new ArgumentException("Products in stock must be non-negative value!");
             }
 
             var curProduct = _dataRepository.GetProduct(productId);
@@ -42,22 +52,36 @@ namespace Store.BLL
             return offer;
         }
 
+        public void DeleteClient(string email)
+        {
+            _dataRepository.DeleteClient(email);
+        }
+
         public void DeleteProduct(Guid productId)
         {
-            var curProduct = _dataRepository.GetProduct(productId);
-            _dataRepository.DeleteProduct(curProduct);
+            _dataRepository.DeleteProduct(productId);
         }
 
         public void DeleteOffer(Guid productId)
         {
-            var curOffer = _dataRepository.GetOffer(productId);
-            _dataRepository.DeleteOffer(curOffer);
+            _dataRepository.DeleteOffer(productId);
         }
 
         public Facture BuyProducts(string email, Guid productId, int productCount)
         {
+            var curClient = _dataRepository.GetClient(email);
+            if (curClient == null)
+            {
+                throw new ArgumentException($"Client with email '{email}' does not exists!");
+            }
+
             var curOffer = _dataRepository.GetOffer(productId);
-            if (curOffer.ProductsInStock == 0)
+            if (curOffer == null)
+            {
+                throw new ArgumentException($"Offer for this product with id '{productId}' does not exists!");
+            }
+
+            if (curOffer.ProductsInStock <= 0)
             {
                 throw new InvalidOperationException("Currently, there are no products in stock, we are sorry!");
             }
@@ -68,11 +92,9 @@ namespace Store.BLL
             }
 
             curOffer.ProductsInStock -= productCount;
-
-            var curClient = _dataRepository.GetClient(email);
-            var facture = new Facture(Guid.NewGuid(), curClient, curOffer, productCount, DateTimeOffset.Now);
-
             _dataRepository.UpdateOffer(productId, curOffer);
+
+            var facture = new Facture(Guid.NewGuid(), curClient, curOffer, DateTimeOffset.Now, productCount);
             _dataRepository.AddEvent(facture);
 
             return facture;
@@ -80,18 +102,40 @@ namespace Store.BLL
 
         public Return ReturnProducts(Guid factureId, int productCount)
         {
-            var curFacture = _dataRepository.GetEvent(factureId);
-            if (curFacture.ProductCount < productCount)
+            if (!(_dataRepository.GetEvent(factureId) is Facture curFacture))
+            {
+                throw new ArgumentException($"Facture with id '{factureId}' does not exists!");
+            }
+
+            if (curFacture.Date > DateTimeOffset.Now)
+            {
+                throw new InvalidOperationException("You cannot return non-purchased products!");
+            }
+
+            if (GetActualClientProductsNumber(curFacture.Client.Email, curFacture.Offer.Product.Id) < productCount)
             {
                 throw new InvalidOperationException("You want to return more products than you bought!");
             }
 
-            var returned = new Return(curFacture as Facture, DateTimeOffset.Now);
-            _dataRepository.UpdateEvent(returned.Id, returned);
+            var curProduct = _dataRepository.GetProduct(curFacture.Offer.Product.Id);
+            if (curProduct == null)
+            {
+                _dataRepository.AddProduct(curFacture.Offer.Product);
+                curProduct = _dataRepository.GetProduct(curFacture.Offer.Product.Id);
+            }
 
-            var curOffer = curFacture.Offer;
+            var curOffer = _dataRepository.GetOffer(curFacture.Offer.Product.Id);
+            if (curOffer == null)
+            {
+                _dataRepository.AddOffer(curFacture.Offer);
+                curOffer = _dataRepository.GetOffer(curFacture.Offer.Product.Id);
+            }
+
             curOffer.ProductsInStock += productCount;
-            _dataRepository.UpdateOffer(curFacture.Offer.Product.Id, curOffer);
+            _dataRepository.UpdateOffer(curProduct.Id, curOffer);
+
+            var returned = new Return(Guid.NewGuid(), curFacture, DateTimeOffset.Now, productCount);
+            _dataRepository.AddEvent(returned);
 
             return returned;
         }
@@ -100,7 +144,7 @@ namespace Store.BLL
         {
             if (newProductsNumber < 0)
             {
-                throw new ArgumentException("Products in stock must be positive number!");
+                throw new ArgumentException("Products in stock must be non-negative number!");
             }
 
             var offer = _dataRepository.GetOffer(productId);
@@ -115,7 +159,7 @@ namespace Store.BLL
 
         public IEnumerable<Return> GetReturnsForClient(string email)
         {
-            return _dataRepository.GetAllReturns().Where(f => f.Client.Email.Equals(email));
+            return _dataRepository.GetAllReturns().Where(r => r.Client.Email.Equals(email));
         }
 
         public IEnumerable<Facture> GetFacturesForProduct(Guid productId)
@@ -123,22 +167,43 @@ namespace Store.BLL
             return _dataRepository.GetAllFactures().Where(f => f.Offer.Product.Id.Equals(productId));
         }
 
+        public IEnumerable<Return> GetReturnsForProduct(Guid productId)
+        {
+            return _dataRepository.GetAllReturns().Where(r => r.Offer.Product.Id.Equals(productId));
+        }
+
         public IEnumerable<Client> GetClientsForProduct(Guid productId)
         {
-            var clientEmails = GetFacturesForProduct(productId).Select(f => f.Client.Email).Distinct();
+            var clientFactureEmails = GetFacturesForProduct(productId).Select(f => f.Client.Email).Distinct();
+            var clientReturnEmails = GetReturnsForProduct(productId).Where(r => IsReturningAllProducts(r.Id)).Select(r => r.Client.Email).Distinct();
+            var clientEmails = clientFactureEmails.Where(email => clientReturnEmails.All(e => email != e));
             return clientEmails.Select(email => _dataRepository.GetAllClients().First(c => c.Email.Equals(email)));
         }
 
         public IEnumerable<Product> GetBoughtProductsForClient(string email)
         {
-            return GetFacturesForClient(email).Select(f => f.Offer.Product);
+            return GetFacturesForClient(email).Select(f => f.Offer.Product).Distinct();
         }
 
         public ValueTuple<int, decimal> GetProductSales(Guid productId)
         {
-            var productCount = GetFacturesForProduct(productId).Sum(f => f.ProductCount);
-            var totalSales = GetFacturesForProduct(productId).Sum(f => f.GrossPrice);
+            var productCount = GetFacturesForProduct(productId).Sum(f => f.BoughtProducts) - GetReturnsForProduct(productId).Sum(r => r.ReturnedProducts);
+            var totalSales = GetFacturesForProduct(productId).Sum(f => f.GrossPrice) - GetReturnsForProduct(productId).Sum(r => r.ReturnedPrice);
             return (productCount, totalSales);
+        }
+
+        public int GetActualClientProductsNumber(string email, Guid productId)
+        {
+            var bought = GetFacturesForClient(email).Where(f => f.Offer.Product.Id.Equals(productId)).Sum(f => f.BoughtProducts);
+            var returned = GetReturnsForClient(email).Where(r => r.Offer.Product.Id.Equals(productId)).Sum(r => r.ReturnedProducts);
+            return bought - returned;
+        }
+        
+        private bool IsReturningAllProducts(Guid returnId)
+        {
+            var curReturn = (Return) _dataRepository.GetEvent(returnId);
+            var curFacture = (Facture) _dataRepository.GetEvent(curReturn.FactureId);
+            return curFacture.BoughtProducts == curReturn.ReturnedProducts;
         }
     }
 }
