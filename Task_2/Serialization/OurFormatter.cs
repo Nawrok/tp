@@ -1,6 +1,6 @@
 ﻿namespace Serialization
 {
-    public class Class1
+    public class OurFormatter
     {
     }
 }
