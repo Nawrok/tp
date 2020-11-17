@@ -6,9 +6,9 @@ namespace Serialization
 {
     public class JsonFormatter
     {
-        public static void Serialize(object obj, Stream stream)
+        public static void Serialize(object graph, Stream stream)
         {
-            string json = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
+            string json = JsonConvert.SerializeObject(graph, Formatting.Indented, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
