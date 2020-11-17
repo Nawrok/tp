@@ -6,16 +6,16 @@ namespace Serialization
 {
     public class JsonFormatter
     {
-        public static void Serialize(object graph, Stream stream)
+        public static void Serialize(object obj, Stream stream)
         {
-            string json = JsonConvert.SerializeObject(graph, Formatting.Indented, new JsonSerializerSettings
+            string json = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
             });
 
-            byte[] serializedContent = Encoding.UTF8.GetBytes(json);
-            stream.Write(serializedContent, 0, serializedContent.Length);
+            byte[] content = Encoding.UTF8.GetBytes(json);
+            stream.Write(content, 0, content.Length);
         }
 
         public static T Deserialize<T>(Stream stream)
