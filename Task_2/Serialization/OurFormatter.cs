@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace Serialization
 {
@@ -29,7 +31,10 @@ namespace Serialization
             get => throw new NotImplementedException();
             set => throw new NotImplementedException();
         }
-        
+
+        private string _fileContent = "";
+        private bool _tmp;
+
         public override object Deserialize(Stream serializationStream)
         {
             List<object> deserializedObjects = new List<object>();
@@ -41,7 +46,7 @@ namespace Serialization
             for (int i = 0; i < dataList.Count - 1; i++)
             {
                 List<string> entity = dataList[i].Split('|').ToList();
-                Type entityType = Type.GetType(entity[3] + ", " + entity[3].Split('.').ToList()[0]) ?? throw new ArgumentNullException(nameof(entityType));
+                Type entityType = Type.GetType(entity[3] + ", " + entity[3].Split('.').ToList()[0]);
                 SerializationInfo info = new SerializationInfo(entityType, new FormatterConverter());
 
                 for (int j = 4; j < entity.Count - 3; j++)
@@ -77,7 +82,72 @@ namespace Serialization
 
         public override void Serialize(Stream serializationStream, object graph)
         {
-            throw new NotImplementedException();
+            if (graph is ISerializable data)
+            {
+                SerializationInfo info = new SerializationInfo(graph.GetType(), new FormatterConverter());
+                info.AddValue("id", IdGenerator.GetId(graph, out _tmp));
+                info.AddValue("ClassType", graph.GetType().FullName);
+                data.GetObjectData(info, Context);
+                foreach(SerializationEntry item in info)
+                {
+                    if (item.Value is ISerializable && item.Value != null && item.Value.GetType() != typeof(DateTime))
+                    {
+                        WriteMember(item.Name, item.Value);
+                        if (_tmp)
+                        {
+                            Serialize(serializationStream, item.Value);
+                        }
+                    }
+                    else
+                    {
+                        WriteMember(item.Name, item.Value);
+                    }
+                }
+                byte[] content = Encoding.UTF8.GetBytes(_fileContent);
+                serializationStream.Write(content, 0, content.Length);
+                _fileContent = "";
+            }
+            else
+            {
+                throw new ArgumentException("Implementation of is necessary");
+            }
+        }
+
+        protected override void WriteObjectRef(object obj, string name, Type memberType)
+        {
+            if (memberType == typeof(string))
+            {
+                WriteString(obj, name);
+            }
+            else
+            {
+                _fileContent += name + "|" + IdGenerator.GetId(obj, out _tmp) + "\n";
+            }
+        }
+
+        protected void WriteString(object str, string name)
+        {
+            _fileContent += name + "|" + (string)str + "|";
+        }
+
+        protected override void WriteDouble(double val, string name)
+        {
+            _fileContent += name + "|" + val.ToString("G", CultureInfo.InvariantCulture) + "|";
+        }
+
+        protected override void WriteInt64(long val, string name)
+        {
+            _fileContent += name + "|" + val.ToString() + "|";
+        }
+
+        protected override void WriteDateTime(DateTime val, string name)
+        {
+            _fileContent += name + "|" + val.ToString("d", DateTimeFormatInfo.InvariantInfo) + "|";
+        }
+
+        protected override void WriteSingle(float val, string name)
+        {
+            _fileContent += name + "|" + val.ToString("0.00", CultureInfo.InvariantCulture) + "|";
         }
 
         protected override void WriteArray(object obj, string name, Type memberType)
@@ -100,17 +170,7 @@ namespace Serialization
             throw new NotImplementedException();
         }
 
-        protected override void WriteDateTime(DateTime val, string name)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void WriteDecimal(decimal val, string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void WriteDouble(double val, string name)
         {
             throw new NotImplementedException();
         }
@@ -125,22 +185,7 @@ namespace Serialization
             throw new NotImplementedException();
         }
 
-        protected override void WriteInt64(long val, string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void WriteObjectRef(object obj, string name, Type memberType)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void WriteSByte(sbyte val, string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void WriteSingle(float val, string name)
         {
             throw new NotImplementedException();
         }
