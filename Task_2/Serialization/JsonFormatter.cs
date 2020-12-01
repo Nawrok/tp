@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using System.IO;
+﻿using System.IO;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Serialization
 {
@@ -11,7 +11,7 @@ namespace Serialization
             string json = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
             });
 
             byte[] content = Encoding.UTF8.GetBytes(json);
@@ -26,7 +26,7 @@ namespace Serialization
             return JsonConvert.DeserializeObject<T>(fileContent, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
             });
         }
     }

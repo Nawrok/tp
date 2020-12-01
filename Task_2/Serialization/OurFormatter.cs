@@ -6,9 +6,23 @@ namespace Serialization
 {
     public class OurFormatter : Formatter
     {
-        public override SerializationBinder Binder { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override StreamingContext Context { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override ISurrogateSelector SurrogateSelector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override SerializationBinder Binder
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
+        public override StreamingContext Context
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
+        public override ISurrogateSelector SurrogateSelector
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
 
         public override object Deserialize(Stream serializationStream)
         {
