@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Serialization
 {
-    public class JsonFormatter
+    public static class JsonFormatter
     {
         public static void Serialize(object obj, Stream stream)
         {

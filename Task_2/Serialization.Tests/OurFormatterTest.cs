@@ -12,7 +12,13 @@ namespace Serialization.Tests
         }
 
         [TestMethod]
-        public void FormatterReference_Test()
+        public void FormatterReference_Test_Objects()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void FormatterReference_Test_Fields()
         {
             Assert.Inconclusive();
         }

@@ -56,12 +56,16 @@ namespace Serialization.Tests
         }
 
         [TestMethod]
-        public void JsonReference_Test()
+        public void JsonReference_Test_Objects()
         {
             Assert.AreSame(_testA, _testC.A);
             Assert.AreSame(_testB, _testC.A.B);
             Assert.AreSame(_testC, _testC.A.B.C);
+        }
 
+        [TestMethod]
+        public void JsonReference_Test_Fields()
+        {
             Assert.AreEqual(_classC.ClassName, _testC.ClassName);
             Assert.AreEqual(_classC.DateTimeValue, _testC.DateTimeValue);
             Assert.AreEqual(_classC.A.ClassName, _testC.A.ClassName);
