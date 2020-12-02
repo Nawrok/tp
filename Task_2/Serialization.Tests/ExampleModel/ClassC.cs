@@ -6,12 +6,8 @@ namespace Serialization.Tests.ExampleModel
 {
     [Serializable]
     [JsonObject]
-    internal class ClassC : ISerializable
+    public class ClassC : ISerializable
     {
-        public ClassA A;
-        public string ClassName;
-        public DateTime DateTimeValue;
-
         public ClassC() { }
 
         public ClassC(string className, DateTime dateTimeValue, ClassA a)
@@ -27,6 +23,10 @@ namespace Serialization.Tests.ExampleModel
             DateTimeValue = info.GetDateTime("DateTimeValue");
             A = (ClassA) info.GetValue("refA", typeof(ClassA));
         }
+
+        public ClassA A { get; set; }
+        public string ClassName { get; set; }
+        public DateTime DateTimeValue { get; set; }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

@@ -2,7 +2,6 @@
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serialization.Tests.ExampleModel;
-using Serialization;
 
 namespace Serialization.Tests
 {
@@ -39,12 +38,13 @@ namespace Serialization.Tests
             _serializeStream.Close();
 
             _deserializeStream = File.Open(_fileName, FileMode.Open, FileAccess.ReadWrite);
-            _testC = (ClassC)formatter.Deserialize(_deserializeStream);
+            _testC = (ClassC) formatter.Deserialize(_deserializeStream);
             _deserializeStream.Close();
 
             _testA = _testC.A;
             _testB = _testA.B;
         }
+
         [TestMethod]
         public void FormatterProperty_Test()
         {

@@ -11,6 +11,9 @@ namespace Serialization
 {
     public class OurFormatter : Formatter
     {
+        private string _fileContent = "";
+        private bool _isFirstTime;
+
         public OurFormatter()
         {
             IdGenerator = new ObjectIDGenerator();
@@ -32,48 +35,54 @@ namespace Serialization
             set => throw new NotImplementedException();
         }
 
-        private string _fileContent = "";
-        private bool _tmp;
-
         public override object Deserialize(Stream serializationStream)
         {
             List<object> deserializedObjects = new List<object>();
 
             StreamReader reader = new StreamReader(serializationStream ?? throw new ArgumentNullException(nameof(serializationStream)));
-            string fileContent = reader.ReadToEnd();
-            List<string> dataList = fileContent.Split(Environment.NewLine.ToCharArray()).ToList();
+            _fileContent = reader.ReadToEnd();
+            List<string> dataList = _fileContent.Split(Environment.NewLine.ToCharArray()).Where(s => s.Length != 0).ToList();
 
-            for (int i = 0; i < dataList.Count - 1; i++)
+            foreach (string line in dataList)
             {
-                List<string> entity = dataList[i].Split('|').ToList();
-                Type entityType = Type.GetType(entity[3] + ", " + entity[3].Split('.').ToList()[0]);
-                SerializationInfo info = new SerializationInfo(entityType, new FormatterConverter());
+                List<string> entries = line.Split('|').ToList();
+                Type entryClassType = Type.GetType(getSerializationMembers(entries)["classType"]) ?? throw new ArgumentNullException(nameof(entryClassType));
+                SerializationInfo info = new SerializationInfo(entryClassType, new FormatterConverter());
 
-                for (int j = 4; j < entity.Count - 3; j++)
+                foreach (KeyValuePair<string, string> member in getSerializationMembers(entries).Skip(2))
                 {
-                    info.AddValue(entity[j], entity[j + 1]);
-                }
-
-                info.AddValue(entity[entity.Count - 2], null);
-                deserializedObjects.Add(Activator.CreateInstance(entityType, info, Context));
-            }
-
-            for (int i = 0; i < deserializedObjects.Count - 1; i++)
-            {
-                foreach (PropertyInfo propertyInfo in deserializedObjects[i].GetType().GetProperties())
-                {
-                    if (propertyInfo.PropertyType == deserializedObjects[i + 1].GetType())
+                    if (member.Key.StartsWith("🎅"))
                     {
-                        propertyInfo.SetValue(deserializedObjects[i], deserializedObjects[i + 1]);
+                        info.AddValue(member.Key.Substring(2), null);
+                    }
+                    else
+                    {
+                        info.AddValue(member.Key, member.Value);
                     }
                 }
+
+                deserializedObjects.Add(Activator.CreateInstance(entryClassType, info, Context));
             }
 
-            foreach (PropertyInfo propertyInfo in deserializedObjects[deserializedObjects.Count - 1].GetType().GetProperties())
+            for (int i = 0; i < deserializedObjects.Count; i++)
             {
-                if (propertyInfo.PropertyType == deserializedObjects[0].GetType())
+                for (int j = 0; j < deserializedObjects.Count; j++)
                 {
-                    propertyInfo.SetValue(deserializedObjects[deserializedObjects.Count - 1], deserializedObjects[0]);
+                    foreach (PropertyInfo p in deserializedObjects[i].GetType().GetProperties())
+                    {
+                        if (p.PropertyType == deserializedObjects[j].GetType())
+                        {
+                            p.SetValue(deserializedObjects[i], deserializedObjects[j]);
+                        }
+                    }
+
+                    foreach (FieldInfo f in deserializedObjects[i].GetType().GetFields())
+                    {
+                        if (f.FieldType == deserializedObjects[j].GetType())
+                        {
+                            f.SetValue(deserializedObjects[i], deserializedObjects[j]);
+                        }
+                    }
                 }
             }
 
@@ -85,31 +94,30 @@ namespace Serialization
             if (graph is ISerializable data)
             {
                 SerializationInfo info = new SerializationInfo(graph.GetType(), new FormatterConverter());
-                info.AddValue("id", IdGenerator.GetId(graph, out _tmp));
-                info.AddValue("ClassType", graph.GetType().FullName);
+                info.AddValue("id", IdGenerator.GetId(graph, out _isFirstTime));
+                info.AddValue("classType", graph.GetType().FullName + ", " + info.AssemblyName.Split(',').First());
                 data.GetObjectData(info, Context);
-                foreach(SerializationEntry item in info)
+
+                foreach (SerializationEntry item in info)
                 {
-                    if (item.Value is ISerializable && item.Value != null && item.Value.GetType() != typeof(DateTime))
-                    {
-                        WriteMember(item.Name, item.Value);
-                        if (_tmp)
-                        {
-                            Serialize(serializationStream, item.Value);
-                        }
-                    }
-                    else
-                    {
-                        WriteMember(item.Name, item.Value);
-                    }
+                    WriteMember(item.Name, item.Value);
                 }
+
+                _fileContent = _fileContent.Remove(_fileContent.Length - 1);
+                _fileContent += Environment.NewLine;
+
+                while (m_objectQueue.Count != 0)
+                {
+                    Serialize(serializationStream, m_objectQueue.Dequeue());
+                }
+
                 byte[] content = Encoding.UTF8.GetBytes(_fileContent);
                 serializationStream.Write(content, 0, content.Length);
                 _fileContent = "";
             }
             else
             {
-                throw new ArgumentException("Implementation of is necessary");
+                throw new ArgumentException($"Implementation of {graph} is necessary");
             }
         }
 
@@ -121,33 +129,37 @@ namespace Serialization
             }
             else
             {
-                _fileContent += name + "|" + IdGenerator.GetId(obj, out _tmp) + "\n";
+                _fileContent += "🎅" + name + ":" + IdGenerator.GetId(obj, out _isFirstTime) + "|";
+                if (_isFirstTime)
+                {
+                    m_objectQueue.Enqueue(obj);
+                }
             }
         }
 
         protected void WriteString(object str, string name)
         {
-            _fileContent += name + "|" + (string)str + "|";
+            _fileContent += name + ":" + (string) str + "|";
         }
 
         protected override void WriteDouble(double val, string name)
         {
-            _fileContent += name + "|" + val.ToString("G", CultureInfo.InvariantCulture) + "|";
+            _fileContent += name + ":" + val.ToString("G", CultureInfo.InvariantCulture) + "|";
         }
 
         protected override void WriteInt64(long val, string name)
         {
-            _fileContent += name + "|" + val.ToString() + "|";
+            _fileContent += name + ":" + val + "|";
         }
 
         protected override void WriteDateTime(DateTime val, string name)
         {
-            _fileContent += name + "|" + val.ToString("d", DateTimeFormatInfo.InvariantInfo) + "|";
+            _fileContent += name + ":" + val.ToString("d", DateTimeFormatInfo.InvariantInfo) + "|";
         }
 
         protected override void WriteSingle(float val, string name)
         {
-            _fileContent += name + "|" + val.ToString("0.00", CultureInfo.InvariantCulture) + "|";
+            _fileContent += name + ":" + val.ToString("0.00", CultureInfo.InvariantCulture) + "|";
         }
 
         protected override void WriteArray(object obj, string name, Type memberType)
@@ -213,6 +225,11 @@ namespace Serialization
         protected override void WriteValueType(object obj, string name, Type memberType)
         {
             throw new NotImplementedException();
+        }
+
+        private static Dictionary<string, string> getSerializationMembers(IEnumerable<string> entries)
+        {
+            return entries.Select(entry => entry.Split(':').ToList()).ToDictionary(parts => parts[0], parts => parts[1]);
         }
     }
 }

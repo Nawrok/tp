@@ -6,12 +6,8 @@ namespace Serialization.Tests.ExampleModel
 {
     [Serializable]
     [JsonObject]
-    internal class ClassA : ISerializable
+    public class ClassA : ISerializable
     {
-        public ClassB B;
-        public string ClassName;
-        public double DoubleValue;
-
         public ClassA() { }
 
         public ClassA(string className, double doubleValue, ClassB b)
@@ -28,11 +24,15 @@ namespace Serialization.Tests.ExampleModel
             B = (ClassB) info.GetValue("refB", typeof(ClassB));
         }
 
+        public ClassB B { get; set; }
+        public string ClassName { get; set; }
+        public double DoubleValue { get; set; }
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("ClassName", ClassName);
-            info.AddValue("DoubleValue", DoubleValue);
             info.AddValue("refB", B);
+            info.AddValue("DoubleValue", DoubleValue);
         }
     }
 }

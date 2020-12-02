@@ -6,12 +6,8 @@ namespace Serialization.Tests.ExampleModel
 {
     [Serializable]
     [JsonObject]
-    internal class ClassB : ISerializable
+    public class ClassB : ISerializable
     {
-        public ClassC C;
-        public string ClassName;
-        public float FloatValue;
-
         public ClassB() { }
 
         public ClassB(string className, float floatValue, ClassC c)
@@ -27,6 +23,10 @@ namespace Serialization.Tests.ExampleModel
             FloatValue = info.GetSingle("FloatValue");
             C = (ClassC) info.GetValue("refC", typeof(ClassC));
         }
+
+        public ClassC C { get; set; }
+        public string ClassName { get; set; }
+        public float FloatValue { get; set; }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
