@@ -101,10 +101,21 @@ namespace LINQ
             using (ProductionDataContext _dataContext = new ProductionDataContext())
             {
                 Table<Product> products = _dataContext.GetTable<Product>();
-                decimal sum = (from product in products
+                decimal totalCost = (from product in products
                                where product.ProductSubcategory.ProductCategory.Name.Equals(category.Name)
                                select product.StandardCost).ToList().Sum();
-                return (int)sum;
+                return (int)totalCost;
+            }
+        }
+
+        public static List<Product> GetAllProducts()
+        {
+            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            {
+                Table<Product> products = _dataContext.GetTable<Product>();
+                List<Product> result = (from product in products
+                                        select product).ToList();
+                return result;
             }
         }
     }
