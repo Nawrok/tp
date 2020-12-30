@@ -16,7 +16,7 @@ namespace LINQ
                     select product).ToList<Product>();
         }
 
-        public static List<Product> GetProductsWithNoCategoryImperative(this List<Product> products)
+        public static List<Product> GetProductsWithoutCategoryImperative(this List<Product> products)
         {
             return products.Where(product => product.ProductSubcategoryID.Equals(null)).ToList();
         }
@@ -44,7 +44,7 @@ namespace LINQ
                               select new { ProductName = product.Name, VendorName = productVendor.Vendor.Name }).ToList();
                 foreach (var p in answer)
                 {
-                    result += p.ProductName + "-" + p.VendorName + "\n";
+                    result += p.ProductName + " - " + p.VendorName + "\n";
                 }
             }
             return result;
@@ -63,7 +63,7 @@ namespace LINQ
                                                     new { ProductName = product.Name, VendorName = productVendor.Vendor.Name }).ToList();
                 foreach (var p in answer)
                 {
-                    result += p.ProductName + "-" + p.VendorName + "\n";
+                    result += p.ProductName + " - " + p.VendorName + "\n";
                 }
             }
             return result;
