@@ -118,5 +118,68 @@ namespace LINQ
                 return result;
             }
         }
+
+        public static void AddProduct(Product product)
+        {
+            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            {
+                _dataContext.Product.InsertOnSubmit(product);
+                _dataContext.SubmitChanges();
+            }
+        }
+        
+        public static Product GetProduct(int productId)
+        {
+            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            {
+                Table<Product> products = _dataContext.GetTable<Product>();
+                List<Product> result = (from product in products
+                                        where product.ProductID == productId
+                                        select product).ToList();
+                return result.Single();
+            }
+        }
+
+        public static void UpdateProduct(Product product, int productId)
+        {
+            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            {
+                Product _testProduct = _dataContext.Product.Single(p => p.ProductID == productId);
+                _testProduct.Name = product.Name;
+                _testProduct.ProductNumber = product.ProductNumber;
+                _testProduct.MakeFlag = product.MakeFlag;
+                _testProduct.FinishedGoodsFlag = product.FinishedGoodsFlag;
+                _testProduct.Color = product.Color;
+                _testProduct.SafetyStockLevel = product.SafetyStockLevel;
+                _testProduct.ReorderPoint = product.ReorderPoint;
+                _testProduct.StandardCost = product.StandardCost;
+                _testProduct.ListPrice = product.ListPrice;
+                _testProduct.Size = product.Size;
+                _testProduct.SizeUnitMeasureCode = product.SizeUnitMeasureCode;
+                _testProduct.WeightUnitMeasureCode = product.WeightUnitMeasureCode;
+                _testProduct.Weight = product.Weight;
+                _testProduct.DaysToManufacture = product.DaysToManufacture;
+                _testProduct.ProductLine = product.ProductLine;
+                _testProduct.Class = product.Class;
+                _testProduct.Style = product.Style;
+                _testProduct.ProductSubcategoryID = product.ProductSubcategoryID;
+                _testProduct.ProductModelID = product.ProductModelID;
+                _testProduct.SellStartDate = product.SellStartDate;
+                _testProduct.SellEndDate = product.SellEndDate;
+                _testProduct.DiscontinuedDate = product.DiscontinuedDate;
+                _testProduct.ModifiedDate = DateTime.Today;
+                _dataContext.SubmitChanges(ConflictMode.ContinueOnConflict);
+            }
+        }
+
+        public static void DeleteProduct(Product product)
+        {
+            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            {
+                Product current = _dataContext.Product.Single(p => product.ProductID == p.ProductID);
+                _dataContext.Product.DeleteOnSubmit(current);
+                _dataContext.SubmitChanges(ConflictMode.ContinueOnConflict);
+            }
+        }
     }
 }
