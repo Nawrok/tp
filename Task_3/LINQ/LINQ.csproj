@@ -43,9 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="MyProduct.cs" />
-    <Compile Include="MyProductDataContext.cs" />
-    <Compile Include="MyProductTools.cs" />
+    <Compile Include="MyProduct\MyProduct.cs" />
+    <Compile Include="MyProduct\MyProductDataContext.cs" />
+    <Compile Include="MyProduct\MyProductTools.cs" />
     <Compile Include="Production.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

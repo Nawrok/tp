@@ -1,10 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using LINQ;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LINQ.Tests
 {
@@ -14,15 +11,15 @@ namespace LINQ.Tests
         [TestMethod]
         public void GetProductsWithoutCategoryDeclarativeTest()
         {
-            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            using (ProductionDataContext dataContext = new ProductionDataContext())
             {
-                List<Product> products = _dataContext.GetTable<Product>().ToList();
+                List<Product> products = dataContext.GetTable<Product>().ToList();
                 List<Product> results = products.GetProductsWithoutCategoryDeclarative();
 
-                Assert.AreEqual(results.Count(), 209);
+                Assert.AreEqual(results.Count, 209);
                 foreach (Product product in results)
                 {
-                    Assert.AreEqual(product.ProductSubcategory, null);
+                    Assert.IsNull(product.ProductSubcategory);
                 }
             }
         }
@@ -30,15 +27,15 @@ namespace LINQ.Tests
         [TestMethod]
         public void GetProductsWithNoCategoryImperativeTest()
         {
-            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            using (ProductionDataContext dataContext = new ProductionDataContext())
             {
-                List<Product> products = _dataContext.GetTable<Product>().ToList();
+                List<Product> products = dataContext.GetTable<Product>().ToList();
                 List<Product> results = products.GetProductsWithoutCategoryImperative();
 
-                Assert.AreEqual(results.Count(), 209);
+                Assert.AreEqual(results.Count, 209);
                 foreach (Product product in results)
                 {
-                    Assert.AreEqual(product.ProductSubcategory, null);
+                    Assert.IsNull(product.ProductSubcategory);
                 }
             }
         }
@@ -46,32 +43,32 @@ namespace LINQ.Tests
         [TestMethod]
         public void GetProductsWithNoCategoryTest()
         {
-            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            using (ProductionDataContext dataContext = new ProductionDataContext())
             {
-                List<Product> products = _dataContext.GetTable<Product>().ToList();
+                List<Product> products = dataContext.GetTable<Product>().ToList();
                 List<Product> resultsD = products.GetProductsWithoutCategoryDeclarative();
                 List<Product> resultsI = products.GetProductsWithoutCategoryImperative();
 
-                Assert.AreSame(resultsD[0], resultsI[0]);
-                Assert.AreEqual(resultsD[0].ProductNumber, resultsI[0].ProductNumber);
-                Assert.AreEqual(resultsD[0].ProductNumber, "AR-5381");
+                Assert.AreSame(resultsD.First(), resultsI.First());
+                Assert.AreEqual(resultsD.First().ProductNumber, resultsI.First().ProductNumber);
+                Assert.AreEqual(resultsD.First().ProductNumber, "AR-5381");
             }
         }
 
         [TestMethod]
         public void PaginateDeclarativeTest()
         {
-            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            using (ProductionDataContext dataContext = new ProductionDataContext())
             {
-                List<Product> products = _dataContext.GetTable<Product>().ToList();
+                List<Product> products = dataContext.GetTable<Product>().ToList();
                 List<Product> results = products.PaginateDeclarative(5, 5);
 
                 Assert.AreEqual(results.Count, 5);
-                Assert.AreEqual(products[20].Name, results[0].Name);
-                Assert.AreEqual(products[21].Name, results[1].Name);
-                Assert.AreEqual(products[22].Name, results[2].Name);
-                Assert.AreEqual(products[23].Name, results[3].Name);
-                Assert.AreEqual(products[24].Name, results[4].Name);
+                for (int i = 0; i < 5; i++)
+                {
+                    Assert.AreEqual(products[i + 20].Name, results[i].Name);
+                }
+
                 Assert.ThrowsException<ArgumentOutOfRangeException>(() => results[5]);
             }
         }
@@ -79,17 +76,17 @@ namespace LINQ.Tests
         [TestMethod]
         public void PaginateImperativeTest()
         {
-            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            using (ProductionDataContext dataContext = new ProductionDataContext())
             {
-                List<Product> products = _dataContext.GetTable<Product>().ToList();
+                List<Product> products = dataContext.GetTable<Product>().ToList();
                 List<Product> results = products.PaginateImperative(5, 5);
 
                 Assert.AreEqual(results.Count, 5);
-                Assert.AreEqual(products[20].Name, results[0].Name);
-                Assert.AreEqual(products[21].Name, results[1].Name);
-                Assert.AreEqual(products[22].Name, results[2].Name);
-                Assert.AreEqual(products[23].Name, results[3].Name);
-                Assert.AreEqual(products[24].Name, results[4].Name);
+                for (int i = 0; i < 5; i++)
+                {
+                    Assert.AreEqual(products[i + 20].Name, results[i].Name);
+                }
+
                 Assert.ThrowsException<ArgumentOutOfRangeException>(() => results[5]);
             }
         }
@@ -97,11 +94,11 @@ namespace LINQ.Tests
         [TestMethod]
         public void GetProductVendorPairDeclarativeTest()
         {
-            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            using (ProductionDataContext dataContext = new ProductionDataContext())
             {
-                List<Product> products = _dataContext.GetTable<Product>().ToList();
+                List<Product> products = dataContext.GetTable<Product>().ToList();
                 string result = products.GetProductVendorPairDeclarative();
-                string pair = result.Split('\n')[10];
+                string pair = result.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[10];
 
                 Assert.AreEqual(pair, "Chainring Bolts - Training Systems");
                 Assert.IsTrue(result.Contains("Hex Nut 16 - Mountain Works"));
@@ -112,11 +109,11 @@ namespace LINQ.Tests
         [TestMethod]
         public void GetProductVendorPairImperativeTest()
         {
-            using (ProductionDataContext _dataContext = new ProductionDataContext())
+            using (ProductionDataContext dataContext = new ProductionDataContext())
             {
-                List<Product> products = _dataContext.GetTable<Product>().ToList();
+                List<Product> products = dataContext.GetTable<Product>().ToList();
                 string result = products.GetProductVendorPairImperative();
-                string pair = result.Split('\n')[10];
+                string pair = result.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[10];
 
                 Assert.AreEqual(pair, "Chainring Bolts - Training Systems");
                 Assert.IsTrue(result.Contains("Hex Nut 16 - Mountain Works"));
