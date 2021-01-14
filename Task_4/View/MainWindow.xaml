@@ -1,9 +1,23 @@
 ﻿<Window x:Class="View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid />
+        xmlns:v="clr-namespace:View" 
+        Title="MainWindow" Height="400" Width="600">
+    <Window.Resources>
+        <DataTemplate x:Key="ProductListTemplate">
+            <v:ProductListView/>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <ContentControl Content="{Binding}" ContentTemplate="{StaticResource ProductListTemplate}" Grid.Column="1" Grid.Row="0"/>
+    </Grid>
 </Window>
