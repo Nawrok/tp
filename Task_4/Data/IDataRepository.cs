@@ -7,12 +7,12 @@ namespace Data
     {
         void AddCreditCard(CreditCard creditCard);
 
-        CreditCard GetCreditCard(int creditCardId);
+        CreditCard GetCreditCard(string cardNumber);
 
         IEnumerable<CreditCard> GetAllCreditCards();
 
-        void UpdateCreditCard(int creditCardId, CreditCard creditCard);
+        void UpdateCreditCard(string cardNumber, CreditCard creditCard);
 
-        void DeleteCreditCard(int creditCardId);
+        void DeleteCreditCard(string cardNumber);
     }
 }
