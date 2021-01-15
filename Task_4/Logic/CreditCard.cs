@@ -1,6 +1,6 @@
 ﻿namespace Logic
 {
-    public class CreditCard : ICreditCard
+    internal class CreditCard : ICreditCard
     {
         public CreditCard() { }
 

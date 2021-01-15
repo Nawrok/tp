@@ -1,28 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using ViewModel.Common;
 
 namespace ViewModel
 {
-    class CreditCardListViewModel : ViewModelBase
+    internal class CreditCardListViewModel : ViewModelBase
     {
-        private static CreditCardListViewModel instance = null;
+        private static CreditCardListViewModel instance;
 
-        private CreditCardViewModel selectedCreditCard = null;
+        private ObservableCollection<CreditCardViewModel> creditCardList;
 
-        private ObservableCollection<CreditCardViewModel> creditCardList = null;
+        private CreditCardViewModel selectedCreditCard;
 
         private ICommand showAddCommand;
 
+        private CreditCardListViewModel()
+        {
+            CreditCardList = GetCreditCards();
+        }
+
         public ObservableCollection<CreditCardViewModel> CreditCardList
         {
-            get
-            {
-                return GetCreditCards();
-            }
+            get => GetCreditCards();
             set
             {
                 creditCardList = value;
@@ -32,10 +31,7 @@ namespace ViewModel
 
         public CreditCardViewModel SelectedCreditCard
         {
-            get
-            {
-                return selectedCreditCard;
-            }
+            get => selectedCreditCard;
             set
             {
                 selectedCreditCard = value;
@@ -51,19 +47,18 @@ namespace ViewModel
                 {
                     showAddCommand = new RelayCommand(ShowAddDialog);
                 }
+
                 return showAddCommand;
             }
-        }
-
-        private CreditCardListViewModel()
-        {
-            this.CreditCardList = GetCreditCards();
         }
 
         public static CreditCardListViewModel Instance()
         {
             if (instance == null)
+            {
                 instance = new CreditCardListViewModel();
+            }
+
             return instance;
         }
 

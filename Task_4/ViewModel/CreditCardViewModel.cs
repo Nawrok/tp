@@ -1,37 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using ViewModel.Common;
 
 namespace ViewModel
 {
-    class CreditCardViewModel : ViewModelBase
+    internal class CreditCardViewModel : ViewModelBase
     {
+        private ICommand cancelCommand;
         private string cardNumber;
         private string cardType;
+
+        private ICommand deleteCommand;
         private int expMonth;
         private int expYear;
+
+        private CreditCardViewModel originalValue;
 
         private ICommand showEditCommand;
 
         private ICommand updateCommand;
 
-        private ICommand deleteCommand;
-
-        private ICommand cancelCommand;
-
-        private CreditCardViewModel originalValue;
-
-        public int CreditCardId
-        {
-            get;
-            set;
-        }
+        public int CreditCardId { get; set; }
 
         public string CardNumber
         {
-            get { return cardNumber; }
+            get => cardNumber;
             set
             {
                 cardNumber = value;
@@ -41,7 +33,7 @@ namespace ViewModel
 
         public string CardType
         {
-            get { return cardType; }
+            get => cardType;
             set
             {
                 cardType = value;
@@ -51,7 +43,7 @@ namespace ViewModel
 
         public int ExpMonth
         {
-            get { return expMonth; }
+            get => expMonth;
             set
             {
                 expMonth = value;
@@ -61,7 +53,7 @@ namespace ViewModel
 
         public int ExpYear
         {
-            get { return expYear; }
+            get => expYear;
             set
             {
                 expYear = value;
@@ -69,16 +61,9 @@ namespace ViewModel
             }
         }
 
-        public Mode Mode
-        {
-            get;
-            set;
-        }
+        public Mode Mode { get; set; }
 
-        public CreditCardListViewModel Container
-        {
-            get { return CreditCardListViewModel.Instance(); }
-        }
+        public CreditCardListViewModel Container => CreditCardListViewModel.Instance();
 
         public ICommand ShowEditCommand
         {
@@ -88,6 +73,7 @@ namespace ViewModel
                 {
                     showEditCommand = new RelayCommand(ShowEditDialog);
                 }
+
                 return showEditCommand;
             }
         }
@@ -100,6 +86,7 @@ namespace ViewModel
                 {
                     updateCommand = new RelayCommand(Update);
                 }
+
                 return updateCommand;
             }
         }
@@ -112,6 +99,7 @@ namespace ViewModel
                 {
                     deleteCommand = new RelayCommand(Delete);
                 }
+
                 return deleteCommand;
             }
         }
@@ -124,26 +112,17 @@ namespace ViewModel
                 {
                     cancelCommand = new RelayCommand(Undo);
                 }
+
                 return cancelCommand;
             }
         }
-        private void ShowEditDialog()
-        {
 
-        }
-        private void Update()
-        {
+        private void ShowEditDialog() { }
 
-        }
+        private void Update() { }
 
-        private void Delete()
-        {
+        private void Delete() { }
 
-        }
-
-        private void Undo()
-        {
-
-        }
+        private void Undo() { }
     }
 }

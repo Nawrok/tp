@@ -47,7 +47,7 @@ namespace Logic
             }
         }
 
-        public void UpdateCreditCard(string cardNumber, CreditCard creditCard)
+        public void UpdateCreditCard(string cardNumber, ICreditCard creditCard)
         {
             using (_dataRepository)
             {

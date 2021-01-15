@@ -3,23 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:v="clr-namespace:View"
         xmlns:vm="clr-namespace:ViewModel;assembly=ViewModel"
         mc:Ignorable="d"
         Title="CreditCardView" Height="270" Width="360">
     <StackPanel>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Label Margin="10" Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold" Foreground="Blue" FontSize="15">
                 <Label.Style>
@@ -29,13 +28,13 @@
                                 <DataTrigger.Value>
                                     <vm:Mode>Add</vm:Mode>
                                 </DataTrigger.Value>
-                                <Setter Property="Content" Value="Add Credit Card"/>
+                                <Setter Property="Content" Value="Add Credit Card" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Mode}">
                                 <DataTrigger.Value>
                                     <vm:Mode>Edit</vm:Mode>
                                 </DataTrigger.Value>
-                                <Setter Property="Content" Value="Edit Credit Card"/>
+                                <Setter Property="Content" Value="Edit Credit Card" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -58,19 +57,19 @@
                                     <DataTrigger.Value>
                                         <vm:Mode>Add</vm:Mode>
                                     </DataTrigger.Value>
-                                    <Setter Property="Content" Value="Add"/>
+                                    <Setter Property="Content" Value="Add" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Mode}">
                                     <DataTrigger.Value>
                                         <vm:Mode>Edit</vm:Mode>
                                     </DataTrigger.Value>
-                                    <Setter Property="Content" Value="Save"/>
+                                    <Setter Property="Content" Value="Save" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button x:Name="btnCancel" Content="Cancel" Command="{Binding CancelCommand}" Margin="10" Width="100"/>
+                <Button x:Name="btnCancel" Content="Cancel" Command="{Binding CancelCommand}" Margin="10" Width="100" />
             </StackPanel>
         </Grid>
     </StackPanel>

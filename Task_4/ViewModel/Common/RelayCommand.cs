@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ViewModel.Common
 {
-    class RelayCommand : ICommand
+    internal class RelayCommand : ICommand
     {
         private readonly Action _handler;
         private bool _isEnabled;
@@ -19,7 +15,7 @@ namespace ViewModel.Common
 
         public bool IsEnabled
         {
-            get { return _isEnabled; }
+            get => _isEnabled;
             set
             {
                 if (value != _isEnabled)

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ViewModel
+﻿namespace ViewModel
 {
-    public enum Mode { Add, Edit };
+    public enum Mode
+    {
+        Add,
+        Edit
+    }
 }
