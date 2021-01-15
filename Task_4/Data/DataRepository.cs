@@ -5,24 +5,22 @@ using System.Linq;
 
 namespace Data
 {
-    public class DataRepository : IDataRepository, IDisposable
+    public class DataRepository : SalesDataContext, IDataRepository
     {
-        private readonly SalesDataContext _context = new SalesDataContext();
-
         public void AddCreditCard(CreditCard creditCard)
         {
-            _context.CreditCard.InsertOnSubmit(creditCard);
-            _context.SubmitChanges();
+            CreditCard.InsertOnSubmit(creditCard);
+            SubmitChanges();
         }
 
         public CreditCard GetCreditCard(int creditCardId)
         {
-            return _context.CreditCard.Single(card => card.CreditCardID == creditCardId);
+            return CreditCard.Single(card => card.CreditCardID == creditCardId);
         }
 
         public IEnumerable<CreditCard> GetAllCreditCards()
         {
-            return _context.CreditCard;
+            return CreditCard;
         }
 
         public void UpdateCreditCard(int creditCardId, CreditCard creditCard)
@@ -33,19 +31,14 @@ namespace Data
             updatedCard.ExpMonth = creditCard.ExpMonth;
             updatedCard.ExpYear = creditCard.ExpYear;
             updatedCard.ModifiedDate = DateTime.Today;
-            _context.SubmitChanges(ConflictMode.ContinueOnConflict);
+            SubmitChanges(ConflictMode.ContinueOnConflict);
         }
 
         public void DeleteCreditCard(int creditCardId)
         {
             CreditCard creditCard = GetCreditCard(creditCardId);
-            _context.CreditCard.DeleteOnSubmit(creditCard);
-            _context.SubmitChanges(ConflictMode.ContinueOnConflict);
-        }
-
-        public void Dispose()
-        {
-            _context.Dispose();
+            CreditCard.DeleteOnSubmit(creditCard);
+            SubmitChanges(ConflictMode.ContinueOnConflict);
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Data
 {
-    public interface IDataRepository
+    public interface IDataRepository : IDisposable
     {
         void AddCreditCard(CreditCard creditCard);
 
