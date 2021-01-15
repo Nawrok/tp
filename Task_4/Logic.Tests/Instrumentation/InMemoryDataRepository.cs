@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Data;
 
@@ -7,19 +8,19 @@ namespace Logic.Tests.Instrumentation
 {
     internal class InMemoryDataRepository : IDataRepository
     {
-        private static readonly Dictionary<int, CreditCard> Context = new Dictionary<int, CreditCard>();
         private static int _count;
+        private readonly Dictionary<int, Data.CreditCard> _context = new Dictionary<int, Data.CreditCard>();
 
         public InMemoryDataRepository()
         {
-            CreditCard card1 = new CreditCard
+            Data.CreditCard card1 = new Data.CreditCard
             {
                 CardNumber = "11122233344455",
                 CardType = "Vista",
                 ExpMonth = 6,
                 ExpYear = 21
             };
-            CreditCard card2 = new CreditCard
+            Data.CreditCard card2 = new Data.CreditCard
             {
                 CardNumber = "55544433322211",
                 CardType = "SuperiorCard",
@@ -30,32 +31,37 @@ namespace Logic.Tests.Instrumentation
             AddCreditCard(card2);
         }
 
-        public void AddCreditCard(CreditCard creditCard)
+        public void AddCreditCard(Data.CreditCard creditCard)
         {
             creditCard.CreditCardID = Interlocked.Increment(ref _count);
             creditCard.ModifiedDate = DateTime.UtcNow;
-            Context.Add(creditCard.CreditCardID, creditCard);
+            _context.Add(creditCard.CreditCardID, creditCard);
         }
 
-        public CreditCard GetCreditCard(int creditCardId)
+        public Data.CreditCard GetCreditCard(string cardNumber)
         {
-            return Context[creditCardId];
+            return _context.Values.Single(card => card.CardNumber.Equals(cardNumber));
         }
 
-        public IEnumerable<CreditCard> GetAllCreditCards()
+        public IEnumerable<Data.CreditCard> GetAllCreditCards()
         {
-            return Context.Values;
+            return _context.Values;
         }
 
-        public void UpdateCreditCard(int creditCardId, CreditCard creditCard)
+        public void UpdateCreditCard(string cardNumber, Data.CreditCard creditCard)
         {
-            creditCard.ModifiedDate = DateTime.UtcNow;
-            Context[creditCardId] = creditCard;
+            Data.CreditCard updatedCard = GetCreditCard(cardNumber);
+            updatedCard.CardNumber = creditCard.CardNumber;
+            updatedCard.CardType = creditCard.CardType;
+            updatedCard.ExpMonth = creditCard.ExpMonth;
+            updatedCard.ExpYear = creditCard.ExpYear;
+            updatedCard.ModifiedDate = DateTime.UtcNow;
         }
 
-        public void DeleteCreditCard(int creditCardId)
+        public void DeleteCreditCard(string cardNumber)
         {
-            Context.Remove(creditCardId);
+            int cardId = GetCreditCard(cardNumber).CreditCardID;
+            _context.Remove(cardId);
         }
 
         public void Dispose()
