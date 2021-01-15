@@ -49,7 +49,7 @@ namespace ViewModel
             {
                 if (showAddCommand == null)
                 {
-                    showAddCommand = new CommandBase(i => this.ShowAddDialog(), null);
+                    showAddCommand = new RelayCommand(ShowAddDialog);
                 }
                 return showAddCommand;
             }

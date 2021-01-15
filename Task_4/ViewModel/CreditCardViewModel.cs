@@ -86,7 +86,7 @@ namespace ViewModel
             {
                 if (showEditCommand == null)
                 {
-                    showEditCommand = new CommandBase(i => this.ShowEditDialog(), null);
+                    showEditCommand = new RelayCommand(ShowEditDialog);
                 }
                 return showEditCommand;
             }
@@ -98,7 +98,7 @@ namespace ViewModel
             {
                 if (updateCommand == null)
                 {
-                    updateCommand = new CommandBase(i => this.Update(), null);
+                    updateCommand = new RelayCommand(Update);
                 }
                 return updateCommand;
             }
@@ -110,7 +110,7 @@ namespace ViewModel
             {
                 if (deleteCommand == null)
                 {
-                    deleteCommand = new CommandBase(i => this.Delete(), null);
+                    deleteCommand = new RelayCommand(Delete);
                 }
                 return deleteCommand;
             }
@@ -122,7 +122,7 @@ namespace ViewModel
             {
                 if (cancelCommand == null)
                 {
-                    cancelCommand = new CommandBase(i => this.Undo(), null);
+                    cancelCommand = new RelayCommand(Undo);
                 }
                 return cancelCommand;
             }
