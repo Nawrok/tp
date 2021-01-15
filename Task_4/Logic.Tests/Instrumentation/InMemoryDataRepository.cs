@@ -5,10 +5,10 @@ using Data;
 
 namespace Logic.Tests.Instrumentation
 {
-    public class InMemoryDataRepository : IDataRepository
+    internal class InMemoryDataRepository : IDataRepository
     {
-        private readonly Dictionary<int, CreditCard> _context = new Dictionary<int, CreditCard>();
-        private int _count = 1000;
+        private static readonly Dictionary<int, CreditCard> Context = new Dictionary<int, CreditCard>();
+        private static int _count;
 
         public InMemoryDataRepository()
         {
@@ -33,34 +33,34 @@ namespace Logic.Tests.Instrumentation
         public void AddCreditCard(CreditCard creditCard)
         {
             creditCard.CreditCardID = Interlocked.Increment(ref _count);
-            creditCard.ModifiedDate = DateTime.Today;
-            _context.Add(creditCard.CreditCardID, creditCard);
+            creditCard.ModifiedDate = DateTime.UtcNow;
+            Context.Add(creditCard.CreditCardID, creditCard);
         }
 
         public CreditCard GetCreditCard(int creditCardId)
         {
-            return _context[creditCardId];
+            return Context[creditCardId];
         }
 
         public IEnumerable<CreditCard> GetAllCreditCards()
         {
-            return _context.Values;
+            return Context.Values;
         }
 
         public void UpdateCreditCard(int creditCardId, CreditCard creditCard)
         {
-            creditCard.ModifiedDate = DateTime.Today;
-            _context[creditCardId] = creditCard;
+            creditCard.ModifiedDate = DateTime.UtcNow;
+            Context[creditCardId] = creditCard;
         }
 
         public void DeleteCreditCard(int creditCardId)
         {
-            _context.Remove(creditCardId);
+            Context.Remove(creditCardId);
         }
 
         public void Dispose()
         {
-            _context.Clear();
+            // unnecessary - in-memory implementation
         }
     }
 }
