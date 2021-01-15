@@ -4,8 +4,8 @@
         xmlns:v="clr-namespace:View" 
         Title="MainWindow" Height="400" Width="600">
     <Window.Resources>
-        <DataTemplate x:Key="ProductListTemplate">
-            <v:ProductListView/>
+        <DataTemplate x:Key="CreditCardListTemplate">
+            <v:CreditCardListView/>
         </DataTemplate>
     </Window.Resources>
     <Grid>
@@ -18,6 +18,6 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <ContentControl Content="{Binding}" ContentTemplate="{StaticResource ProductListTemplate}" Grid.Column="1" Grid.Row="0"/>
+        <ContentControl Content="{Binding}" ContentTemplate="{StaticResource CreditCardListTemplate}" Grid.Column="1" Grid.Row="0"/>
     </Grid>
 </Window>

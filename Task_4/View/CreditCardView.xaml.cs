@@ -10,17 +10,13 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace View
 {
-    /// <summary>
-    /// Logika interakcji dla klasy ProductListView.xaml
-    /// </summary>
-    public partial class ProductListView : UserControl
+    public partial class CreditCardView : Window
     {
-        public ProductListView()
+        public CreditCardView()
         {
             InitializeComponent();
         }

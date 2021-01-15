@@ -70,21 +70,21 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ProductListView.xaml">
+    <Page Include="CreditCardListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ProductView.xaml">
+    <Page Include="CreditCardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProductListView.xaml.cs">
-      <DependentUpon>ProductListView.xaml</DependentUpon>
+    <Compile Include="CreditCardListView.xaml.cs">
+      <DependentUpon>CreditCardListView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ProductView.xaml.cs">
-      <DependentUpon>ProductView.xaml</DependentUpon>
+    <Compile Include="CreditCardView.xaml.cs">
+      <DependentUpon>CreditCardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
