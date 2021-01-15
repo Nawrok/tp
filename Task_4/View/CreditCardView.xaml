@@ -50,7 +50,7 @@
             <TextBox Name="txtCardExpMonth" Text="{Binding ExpirationMonth}" Grid.Column="1" Grid.Row="3" Margin="10,20" Width="200" />
             <TextBox Name="txtCardExpYear" Text="{Binding ExpirationYear}" Grid.Column="1" Grid.Row="4" Margin="10,20" Width="200" />
             <StackPanel Grid.Column="1" Grid.Row="3" Margin="10" Orientation="Horizontal">
-                <Button x:Name="btnUpdate" Command="{Binding UpdateCommand}" Width="100" Margin="10" Click="btnUpdate_Click">
+                <Button x:Name="btnUpdate" Command="{Binding UpdateCommand}" Width="100" Margin="10">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Style.Triggers>
@@ -70,7 +70,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button x:Name="btnCancel" Content="Cancel" Command="{Binding CancelCommand}" Margin="10" Width="100" Click="btnCancel_Click" />
+                <Button x:Name="btnCancel" Content="Cancel" Command="{Binding CancelCommand}" Margin="10" Width="100"/>
             </StackPanel>
         </Grid>
     </StackPanel>
