@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace ViewModel.Common
 {
-    internal class RelayCommand : ICommand
+    public class RelayCommand : ICommand
     {
         private readonly Action _handler;
         private bool _isEnabled;
@@ -18,14 +18,13 @@ namespace ViewModel.Common
             get => _isEnabled;
             set
             {
-                if (value != _isEnabled)
+                if (value == _isEnabled)
                 {
-                    _isEnabled = value;
-                    if (CanExecuteChanged != null)
-                    {
-                        CanExecuteChanged(this, EventArgs.Empty);
-                    }
+                    return;
                 }
+
+                _isEnabled = value;
+                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

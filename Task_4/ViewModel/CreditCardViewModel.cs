@@ -1,121 +1,66 @@
 ﻿using System.Windows.Input;
+using Model;
 using ViewModel.Common;
 
 namespace ViewModel
 {
-    internal class CreditCardViewModel : ViewModelBase
+    public class CreditCardViewModel : ViewModelBase
     {
-        private ICommand cancelCommand;
-        private string cardNumber;
-        private string cardType;
-
-        private ICommand deleteCommand;
-        private int expMonth;
-        private int expYear;
-
-        private CreditCardViewModel originalValue;
-
-        private ICommand showEditCommand;
-
-        private ICommand updateCommand;
-
-        public int CreditCardId { get; set; }
-
+        private CreditCardModel _creditCardModel = new CreditCardModel();
+        private CreditCardViewModel _originalValue;
+        
         public string CardNumber
         {
-            get => cardNumber;
+            get => _creditCardModel.CardNumber;
             set
             {
-                cardNumber = value;
+                _creditCardModel.CardNumber = value;
                 OnPropertyChanged("CardNumber");
             }
         }
 
         public string CardType
         {
-            get => cardType;
+            get => _creditCardModel.CardType;
             set
             {
-                cardType = value;
+                _creditCardModel.CardType = value;
                 OnPropertyChanged("CardType");
             }
         }
 
         public int ExpMonth
         {
-            get => expMonth;
+            get => _creditCardModel.ExpMonth;
             set
             {
-                expMonth = value;
+                _creditCardModel.ExpMonth = (byte) value;
                 OnPropertyChanged("ExpirationMonth");
             }
         }
 
         public int ExpYear
         {
-            get => expYear;
+            get => _creditCardModel.ExpYear;
             set
             {
-                expYear = value;
+                _creditCardModel.ExpYear = (short) value;
                 OnPropertyChanged("ExpirationYear");
             }
         }
 
         public Mode Mode { get; set; }
 
+        private ICommand showEditCommand;
+        public ICommand ShowEditCommand => showEditCommand ?? (showEditCommand = new RelayCommand(ShowEditDialog));
+        private ICommand updateCommand;
+        public ICommand UpdateCommand => updateCommand ?? (updateCommand = new RelayCommand(Update));
+        private ICommand deleteCommand;
+        public ICommand DeleteCommand => deleteCommand ?? (deleteCommand = new RelayCommand(Delete));
+        private ICommand cancelCommand;
+        public ICommand CancelCommand => cancelCommand ?? (cancelCommand = new RelayCommand(Undo));
+
         public CreditCardListViewModel Container => CreditCardListViewModel.Instance();
-
-        public ICommand ShowEditCommand
-        {
-            get
-            {
-                if (showEditCommand == null)
-                {
-                    showEditCommand = new RelayCommand(ShowEditDialog);
-                }
-
-                return showEditCommand;
-            }
-        }
-
-        public ICommand UpdateCommand
-        {
-            get
-            {
-                if (updateCommand == null)
-                {
-                    updateCommand = new RelayCommand(Update);
-                }
-
-                return updateCommand;
-            }
-        }
-
-        public ICommand DeleteCommand
-        {
-            get
-            {
-                if (deleteCommand == null)
-                {
-                    deleteCommand = new RelayCommand(Delete);
-                }
-
-                return deleteCommand;
-            }
-        }
-
-        public ICommand CancelCommand
-        {
-            get
-            {
-                if (cancelCommand == null)
-                {
-                    cancelCommand = new RelayCommand(Undo);
-                }
-
-                return cancelCommand;
-            }
-        }
 
         private void ShowEditDialog() { }
 

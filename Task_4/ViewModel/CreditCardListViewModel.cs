@@ -4,7 +4,7 @@ using ViewModel.Common;
 
 namespace ViewModel
 {
-    internal class CreditCardListViewModel : ViewModelBase
+    public class CreditCardListViewModel : ViewModelBase
     {
         private static CreditCardListViewModel instance;
 
@@ -62,7 +62,7 @@ namespace ViewModel
             return instance;
         }
 
-        internal ObservableCollection<CreditCardViewModel> GetCreditCards()
+        public ObservableCollection<CreditCardViewModel> GetCreditCards()
         {
             //if (CreditCardList == null)
             //    CreditCardList = new ObservableCollection<CreditCardViewModel>();
