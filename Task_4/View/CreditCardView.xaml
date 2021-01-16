@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:ViewModel;assembly=ViewModel"
         mc:Ignorable="d"
-        Title="CreditCardView" Height="270" Width="360">
+        Title="CreditCardView" Height="400" Width="400">
     <StackPanel>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -48,8 +48,8 @@
             <TextBox Name="txtCardType" Text="{Binding CardType}" Grid.Column="1" Grid.Row="2" Margin="10,20" Width="200" />
             <TextBox Name="txtCardExpMonth" Text="{Binding ExpirationMonth}" Grid.Column="1" Grid.Row="3" Margin="10,20" Width="200" />
             <TextBox Name="txtCardExpYear" Text="{Binding ExpirationYear}" Grid.Column="1" Grid.Row="4" Margin="10,20" Width="200" />
-            <StackPanel Grid.Column="1" Grid.Row="3" Margin="10" Orientation="Horizontal">
-                <Button x:Name="btnUpdate" Command="{Binding UpdateCommand}" Width="100" Margin="10">
+            <StackPanel Grid.Column="1" Grid.Row="5" Margin="10" Orientation="Horizontal">
+                <Button x:Name="btnUpdate" Command="{Binding UpdateCommand}" Width="95" Margin="10,10,10,10.2">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Style.Triggers>
@@ -69,7 +69,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button x:Name="btnCancel" Content="Cancel" Command="{Binding CancelCommand}" Margin="10" Width="100" />
+                <Button x:Name="btnCancel" Content="Cancel" Command="{Binding CancelCommand}" Margin="10,10,10,10.2" Width="82" />
             </StackPanel>
         </Grid>
     </StackPanel>
