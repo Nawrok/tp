@@ -36,7 +36,7 @@ namespace Logic.Tests
         public void GetCreditCardTest()
         {
             _dataService.AddCreditCard(_creditCard);
-            Assert.AreEqual(_creditCard.CardNumber, _dataService.GetCreditCard(_dataService.GetAllCreditCards().Last().CardNumber));
+            Assert.AreEqual(_creditCard.CardNumber, _dataService.GetCreditCard(_creditCard.CardNumber).CardNumber);
         }
 
         [TestMethod]
