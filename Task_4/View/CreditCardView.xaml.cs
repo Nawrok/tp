@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using ViewModel;
 
 namespace View
 {
@@ -7,6 +9,12 @@ namespace View
         public CreditCardView()
         {
             InitializeComponent();
+        }
+
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+            CreditCardViewModel mc = (CreditCardViewModel)DataContext;
         }
     }
 }

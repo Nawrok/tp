@@ -5,13 +5,14 @@
     <UserControl.Resources>
         <DataTemplate x:Key="RowButtons">
             <StackPanel Orientation="Horizontal">
-                <Button Content="Edit" Command="{Binding ShowEditCommand}" />
-                <Button x:Name="btnDeleteCreditCard" Content="Delete" Command="{Binding DeleteCommand}" />
+                <!--<Button Content="Edit" Command="{Binding ShowEditCommand}" />
+                <Button x:Name="btnDeleteCreditCard" Content="Delete" Command="{Binding DeleteCommand}" />-->
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
 
     <StackPanel>
+        <Button x:Name="btnAddCreditCard" Content="Add Credit Card" Width="90" HorizontalAlignment="Center" Margin="10 10 0 10" Command="{Binding ShowAddCommand}" />
         <ListView x:Name="lsvCreditCardList" ItemsSource="{Binding CreditCardList}" SelectedItem="{Binding SelectedCreditCard}">
             <ListView.View>
                 <GridView>
@@ -19,10 +20,9 @@
                     <GridViewColumn Header="Card Type" DisplayMemberBinding="{Binding CreditCardName}" Width="100" />
                     <GridViewColumn Header="Expiration Month" DisplayMemberBinding="{Binding CreditCardExpMonth}" Width="100" />
                     <GridViewColumn Header="Expiration Year" DisplayMemberBinding="{Binding CreditCardExpYear}" Width="100" />
-                    <GridViewColumn CellTemplate="{StaticResource RowButtons}" />
+                    <!--<GridViewColumn CellTemplate="{StaticResource RowButtons}" />-->
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="btnAddCreditCard" Content="Add Credit Card" Width="90" HorizontalAlignment="Center" Margin="10 10 0 10" Command="{Binding ShowAddCommand}" />
     </StackPanel>
 </UserControl>
