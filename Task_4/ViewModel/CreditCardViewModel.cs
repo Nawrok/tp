@@ -1,14 +1,19 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using Model;
 using ViewModel.Common;
+using ViewModel.Interface;
 
 namespace ViewModel
 {
     public class CreditCardViewModel : ViewModelBase
     {
         private CreditCardModel _creditCardModel = new CreditCardModel();
+        private CreditCardService _creditCardService = new CreditCardService();
         private CreditCardViewModel _originalValue;
-        
+
+        public IWindowResolver WindowResolver { get; set; }
+
         public string CardNumber
         {
             get => _creditCardModel.CardNumber;
@@ -29,22 +34,22 @@ namespace ViewModel
             }
         }
 
-        public int ExpMonth
+        public byte ExpMonth
         {
             get => _creditCardModel.ExpMonth;
             set
             {
-                _creditCardModel.ExpMonth = (byte) value;
+                _creditCardModel.ExpMonth = value;
                 OnPropertyChanged("ExpirationMonth");
             }
         }
 
-        public int ExpYear
+        public short ExpYear
         {
             get => _creditCardModel.ExpYear;
             set
             {
-                _creditCardModel.ExpYear = (short) value;
+                _creditCardModel.ExpYear = value;
                 OnPropertyChanged("ExpirationYear");
             }
         }
@@ -62,12 +67,54 @@ namespace ViewModel
 
         public CreditCardListViewModel Container => CreditCardListViewModel.Instance();
 
-        private void ShowEditDialog() { }
+        private void ShowEditDialog()
+        {
+            this.Mode = Mode.Edit;
+            IOperationWindow dialog = WindowResolver.GetWindow();
+            dialog.BindViewModel(this);
+            dialog.Show();
+        }
 
-        private void Update() { }
+        public Action CloseWindow { get; set; }
 
-        private void Delete() { }
+        private void Update()
+        {
+            CreditCardModel card = new CreditCardModel
+            {
+                CardNumber = this.CardNumber,
+                CardType = this.CardType,
+                ExpMonth = this.ExpMonth,
+                ExpYear = this.ExpYear
+            };
+            if (this.Mode == Mode.Add)
+            {
+                _creditCardService.AddCreditCard(card);
+                this.Container.CreditCardList = this.Container.GetCreditCards();
+            }
+            else if(this.Mode == Mode.Edit)
+            {
+                _creditCardService.UpdateCreditCard(this.CardNumber, card);
+                this._originalValue = (CreditCardViewModel)this.MemberwiseClone();
+            }
+            CloseWindow();
+        }
 
-        private void Undo() { }
+        private void Delete()
+        {
+            _creditCardService.DeleteCreditCard(this.CardNumber);
+            this.Container.CreditCardList = this.Container.GetCreditCards();
+        }
+
+        private void Undo()
+        {
+            if(this.Mode == Mode.Edit)
+            {
+                this.CardNumber = _originalValue.CardNumber;
+                this.CardType = _originalValue.CardType;
+                this.ExpMonth = _originalValue.ExpMonth;
+                this.ExpYear = _originalValue.ExpYear;
+            }
+            CloseWindow();
+        }
     }
 }
