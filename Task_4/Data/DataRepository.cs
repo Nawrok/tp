@@ -45,7 +45,7 @@ namespace Data
 
         public void Dispose()
         {
-            _context.Dispose();
+            //_context.Dispose();
         }
     }
 }

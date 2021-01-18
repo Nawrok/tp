@@ -12,14 +12,14 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <Button x:Name="btnAddCreditCard" Content="Add Credit Card" Width="90" HorizontalAlignment="Center" Margin="10 10 0 10" Command="{Binding ShowAddCommand}" />
-        <ListView x:Name="lsvCreditCardList" ItemsSource="{Binding CreditCardList}" SelectedItem="{Binding SelectedCreditCard}">
+        <Button  x:Name="btnAddCreditCard" Content="Add Credit Card" Width="90" HorizontalAlignment="Center" Margin="10 10 0 10" Command="{Binding ShowAddCommand}" />
+        <ListView Height="100" x:Name="lsvCreditCardList" ItemsSource="{Binding CreditCardList}" SelectedItem="{Binding SelectedCreditCard}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Card Number" DisplayMemberBinding="{Binding CreditCardNumber}" Width="100" />
-                    <GridViewColumn Header="Card Type" DisplayMemberBinding="{Binding CreditCardName}" Width="100" />
-                    <GridViewColumn Header="Expiration Month" DisplayMemberBinding="{Binding CreditCardExpMonth}" Width="100" />
-                    <GridViewColumn Header="Expiration Year" DisplayMemberBinding="{Binding CreditCardExpYear}" Width="100" />
+                    <GridViewColumn Header="Card Number" DisplayMemberBinding="{Binding CardNumber}" Width="100" />
+                    <GridViewColumn Header="Card Type" DisplayMemberBinding="{Binding CardType}" Width="100" />
+                    <GridViewColumn Header="Expiration Month" DisplayMemberBinding="{Binding ExpMonth}" Width="100" />
+                    <GridViewColumn Header="Expiration Year" DisplayMemberBinding="{Binding ExpYear}" Width="100" />
                     <!--<GridViewColumn CellTemplate="{StaticResource RowButtons}" />-->
                 </GridView>
             </ListView.View>

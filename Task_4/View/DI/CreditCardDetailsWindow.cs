@@ -12,7 +12,7 @@ namespace View.DI
             _view = new CreditCardView();
         }
 
-        public void BindViewModel<T>(T viewModel)
+        public void BindViewModel<T>(T viewModel) where T : IViewModel
         {
             _view.DataContext = viewModel;
         }

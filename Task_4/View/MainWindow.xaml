@@ -29,13 +29,13 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Card Number:"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=CardNumber}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CardNumber}"/>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Card Type:"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=CardType}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CardType}"/>
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Expiration Month:"/>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Path=ExpMonth}"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ExpMonth}"/>
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Expiration Year:"/>
-                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Path=ExpYear}"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ExpYear}"/>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -58,8 +58,8 @@
         <ContentControl Content="{Binding SelectedCreditCard}" ContentTemplate="{StaticResource DetailTemplate}" Grid.Column="1" Grid.Row="2" />
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="3">
-            <Button Content="Edit" Margin="10,0,10,0" Command="{Binding ShowEditCommand}">
-                <Button.Style>
+            <Button Content="Edit" Margin="10,0,10,0" Command="{Binding ShowEditCommand}"/>
+                <!--<Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="IsEnabled" Value="False"/>
                         <Style.Triggers>
@@ -69,9 +69,9 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-            </Button>
-            <Button Content="Delete" Margin="10,0,10,0" Command="{Binding SelectedCreditCard.DeleteCommand}">
-                <Button.Style>
+            </Button>-->
+            <Button Content="Delete" Margin="10,0,10,0" Command="{Binding SelectedCreditCard.DeleteCommand}"/>
+                <!--<Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="IsEnabled" Value="False"/>
                         <Style.Triggers>
@@ -81,7 +81,7 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-            </Button>
+            </Button>-->
         </StackPanel>
     </Grid>
 </Window>

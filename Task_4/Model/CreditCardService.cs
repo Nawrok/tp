@@ -30,7 +30,7 @@ namespace Model
 
         public IEnumerable<CreditCardModel> GetAllCreditCards()
         {
-            return _dataService.GetAllCreditCards().Cast<CreditCardModel>();
+            return _dataService.GetAllCreditCards().Select(card => new CreditCardModel(card));
         }
 
         public void UpdateCreditCard(string cardNumber, CreditCardModel creditCard)

@@ -1,5 +1,6 @@
 ﻿using Model;
 using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using ViewModel.Common;
@@ -7,13 +8,13 @@ using ViewModel.Interface;
 
 namespace ViewModel
 {
-    public class CreditCardListViewModel : ViewModelBase
+    public class CreditCardListViewModel : ViewModelBase, IViewModel
     {
         private static CreditCardListViewModel instance;
 
         private CreditCardService _creditCardService = new CreditCardService();
 
-        private ObservableCollection<CreditCardModel> creditCardList;
+        private ObservableCollection<CreditCardViewModel> creditCardList;
 
         private CreditCardViewModel selectedCreditCard;
 
@@ -27,12 +28,7 @@ namespace ViewModel
             CreditCardList = GetCreditCards();
         }
 
-        public CreditCardListViewModel(CreditCardService creditCardService)
-        {
-            _creditCardService = creditCardService;
-        }
-
-        public ObservableCollection<CreditCardModel> CreditCardList
+        public ObservableCollection<CreditCardViewModel> CreditCardList
         {
             get => GetCreditCards();
             set
@@ -90,16 +86,16 @@ namespace ViewModel
             return instance;
         }
 
-        public ObservableCollection<CreditCardModel> GetCreditCards()
+        public ObservableCollection<CreditCardViewModel> GetCreditCards()
         {
-            if (CreditCardList == null)
-                CreditCardList = new ObservableCollection<CreditCardModel>();
-            CreditCardList.Clear();
-            foreach (CreditCardModel card in _creditCardService.GetAllCreditCards())
+            if (creditCardList == null)
+                creditCardList = new ObservableCollection<CreditCardViewModel>();
+            creditCardList.Clear();
+            foreach (CreditCardViewModel card in _creditCardService.GetAllCreditCards().Select(card => new CreditCardViewModel(card, _creditCardService)))
             {
-                CreditCardList.Add(card);
+                creditCardList.Add(card);
             }
-            return CreditCardList;
+            return creditCardList;
         }
 
         private void ShowAddDialog()

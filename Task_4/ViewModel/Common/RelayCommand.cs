@@ -5,39 +5,69 @@ namespace ViewModel.Common
 {
     public class RelayCommand : ICommand
     {
-        private readonly Action _handler;
-        private bool _isEnabled;
-
-        public RelayCommand(Action handler)
+        #region constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RelayCommand"/>  class that can always execute.
+        /// </summary>
+        /// <param name="execute">The execution logic encapsulated by the <paramref name="execute"/> delegate. </param>
+        /// <exception cref="T:System.ArgumentNullException">If the <paramref name="execute"/> argument is null.</exception>
+        public RelayCommand(Action execute) : this(execute, null) { }
+        /// <summary>
+        /// Initializes a new instance of the RelayCommand class.
+        /// </summary>
+        /// <param name="canExecute">The execution status logic encapsulated by the <paramref name="canExecute"/> delegate.
+        /// </param>
+        /// <exception cref="T:System.ArgumentNullException">If the execute argument is null.</exception>
+        public RelayCommand(Action execute, Func<bool> canExecute)
         {
-            _handler = handler;
+            this.m_Execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            this.m_CanExecute = canExecute;
         }
+        #endregion
 
-        public bool IsEnabled
-        {
-            get => _isEnabled;
-            set
-            {
-                if (value == _isEnabled)
-                {
-                    return;
-                }
-
-                _isEnabled = value;
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
+        #region ICommand
+        /// <summary>
+        /// Defines the method that determines whether the command can execute in its current state.
+        /// </summary>
+        /// <param name="parameter">Data used by the command. Because the command does not require data 
+        /// to be passed, this parameter is always ignored</param>
+        /// <returns><c>true</c> if this command can be executed; otherwise, <c>false</c>.</returns>
         public bool CanExecute(object parameter)
         {
-            return IsEnabled;
+            if (this.m_CanExecute == null)
+                return true;
+            if (parameter == null)
+                return this.m_CanExecute();
+            return this.m_CanExecute();
         }
-
-        public event EventHandler CanExecuteChanged;
-
-        public void Execute(object parameter)
+        /// <summary>
+        /// Defines the method to be called when the command is invoked.
+        /// </summary>
+        /// <param name="parameter">Data used by the command. Because the command does not require data 
+        /// to be passed, this parameter is always ignored</param>
+        public virtual void Execute(object parameter)
         {
-            _handler();
+            this.m_Execute();
         }
+        /// <summary>
+        /// Occurs when changes occur that affect whether the command should execute.
+        /// </summary>
+        public event EventHandler CanExecuteChanged;
+        #endregion
+
+        #region API
+        /// <summary>
+        /// Raises the <see cref="CanExecuteChanged" /> event.
+        /// </summary>
+        internal void RaiseCanExecuteChanged()
+        {
+            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
+        #endregion
+
+        #region private
+        private readonly Action m_Execute;
+        private readonly Func<bool> m_CanExecute;
+        #endregion
     }
 }

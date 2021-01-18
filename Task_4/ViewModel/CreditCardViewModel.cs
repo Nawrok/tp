@@ -6,10 +6,10 @@ using ViewModel.Interface;
 
 namespace ViewModel
 {
-    public class CreditCardViewModel : ViewModelBase
+    public class CreditCardViewModel : ViewModelBase, IViewModel
     {
-        private CreditCardModel _creditCardModel = new CreditCardModel();
-        private CreditCardService _creditCardService = new CreditCardService();
+        private CreditCardModel _creditCardModel;
+        private CreditCardService _creditCardService;
         private CreditCardViewModel _originalValue;
 
         public IWindowResolver WindowResolver { get; set; }
@@ -40,7 +40,7 @@ namespace ViewModel
             set
             {
                 _creditCardModel.ExpMonth = value;
-                OnPropertyChanged("ExpirationMonth");
+                OnPropertyChanged("ExpMonth");
             }
         }
 
@@ -50,7 +50,7 @@ namespace ViewModel
             set
             {
                 _creditCardModel.ExpYear = value;
-                OnPropertyChanged("ExpirationYear");
+                OnPropertyChanged("ExpYear");
             }
         }
 
@@ -63,6 +63,19 @@ namespace ViewModel
         private ICommand deleteCommand;
         public ICommand DeleteCommand => deleteCommand ?? (deleteCommand = new RelayCommand(Delete));
         private ICommand cancelCommand;
+
+        public CreditCardViewModel(CreditCardModel creditCardModel, CreditCardService creditCardService)
+        {
+            _creditCardModel = creditCardModel;
+            _creditCardService = creditCardService;
+        }
+
+        public CreditCardViewModel()
+        {
+            _creditCardModel = new CreditCardModel();
+            _creditCardService = new CreditCardService();
+        }
+
         public ICommand CancelCommand => cancelCommand ?? (cancelCommand = new RelayCommand(Undo));
 
         public CreditCardListViewModel Container => CreditCardListViewModel.Instance();
