@@ -79,7 +79,7 @@ namespace ViewModel
 
         private void ShowAddDialog()
         {
-            CreditCardViewModel card = new CreditCardViewModel
+            CreditCardViewModel card = new CreditCardViewModel(new CreditCardModel(), _creditCardService)
             {
                 Mode = Mode.Add
             };

@@ -10,14 +10,12 @@ namespace ViewModel
     {
         private readonly CreditCardModel _creditCardModel;
         private readonly CreditCardService _creditCardService;
+        private CreditCardModel _originalCardModel;
 
         private ICommand _cancelCommand;
         private ICommand _deleteCommand;
-        private CreditCardModel _originalCardModel;
         private ICommand _showEditCommand;
         private ICommand _updateCommand;
-
-        public CreditCardViewModel() : this(new CreditCardModel(), new CreditCardService()) { }
 
         public CreditCardViewModel(CreditCardModel creditCardModel, CreditCardService creditCardService)
         {
@@ -102,7 +100,7 @@ namespace ViewModel
                     throw new ArgumentOutOfRangeException();
             }
 
-            CloseWindow();
+            CloseWindow?.Invoke();
         }
 
         private void Delete()
@@ -129,7 +127,7 @@ namespace ViewModel
                 ExpYear = _originalCardModel.ExpYear;
             }
 
-            CloseWindow();
+            CloseWindow?.Invoke();
         }
     }
 }
