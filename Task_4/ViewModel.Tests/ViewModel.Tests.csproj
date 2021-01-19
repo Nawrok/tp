@@ -56,6 +56,18 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Logic.Tests\Logic.Tests.csproj">
+      <Project>{dd12d238-9361-4043-8dd6-2fb4b8f8e67b}</Project>
+      <Name>Logic.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logic\Logic.csproj">
+      <Project>{346f2401-0c1e-40e4-a8f7-47d9408a73fe}</Project>
+      <Name>Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model.Tests\Model.Tests.csproj">
+      <Project>{96fcd91f-e0fc-4e9c-86e7-1e6d27f59d1c}</Project>
+      <Name>Model.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{710A21B5-F011-4FB2-92D2-13FDD76B19C6}</Project>
       <Name>Model</Name>
