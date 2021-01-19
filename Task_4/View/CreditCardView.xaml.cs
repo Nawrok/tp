@@ -14,7 +14,7 @@ namespace View
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-            CreditCardViewModel mc = (CreditCardViewModel)DataContext;
+            CreditCardViewModel mc = (CreditCardViewModel) DataContext;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using Data;
 using Model;
 using ViewModel.Common;
 using ViewModel.Interface;
@@ -9,11 +8,25 @@ namespace ViewModel
 {
     public class CreditCardViewModel : ViewModelBase, IViewModel
     {
-        private CreditCardModel _creditCardModel;
+        private readonly CreditCardModel _creditCardModel;
+        private readonly CreditCardService _creditCardService;
         private CreditCardModel _originalCardModel;
-        private CreditCardService _creditCardService;
+        
+        private ICommand _cancelCommand;
+        private ICommand _deleteCommand;
+        private ICommand _showEditCommand;
+        private ICommand _updateCommand;
 
-        public IWindowResolver WindowResolver { get; set; }
+        public CreditCardViewModel(CreditCardModel creditCardModel, CreditCardService creditCardService)
+        {
+            _creditCardModel = creditCardModel;
+            _originalCardModel = creditCardModel.Clone();
+            _creditCardService = creditCardService;
+        }
+
+        public CreditCardViewModel() : this(new CreditCardModel(), new CreditCardService()) { }
+
+        private IWindowResolver WindowResolver { get; set; }
 
         public string CardNumber
         {
@@ -56,51 +69,38 @@ namespace ViewModel
         }
 
         public Mode Mode { get; set; }
+        public ICommand ShowEditCommand => _showEditCommand ?? (_showEditCommand = new RelayCommand(ShowEditDialog));
+        public ICommand UpdateCommand => _updateCommand ?? (_updateCommand = new RelayCommand(Update));
+        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(Delete));
+        public ICommand CancelCommand => _cancelCommand ?? (_cancelCommand = new RelayCommand(Undo));
 
-        private ICommand showEditCommand;
-        public ICommand ShowEditCommand => showEditCommand ?? (showEditCommand = new RelayCommand(ShowEditDialog));
-        private ICommand updateCommand;
-        public ICommand UpdateCommand => updateCommand ?? (updateCommand = new RelayCommand(Update));
-        private ICommand deleteCommand;
-        public ICommand DeleteCommand => deleteCommand ?? (deleteCommand = new RelayCommand(Delete));
-        private ICommand cancelCommand;
+        public static CreditCardListViewModel Container => CreditCardListViewModel.Instance();
 
-        public CreditCardViewModel(CreditCardModel creditCardModel, CreditCardService creditCardService)
-        {
-            _creditCardModel = creditCardModel;
-            _originalCardModel = creditCardModel.Clone();
-            _creditCardService = creditCardService;
-        }
-
-        public CreditCardViewModel() : this(new CreditCardModel(), new CreditCardService()) { }
-
-        public ICommand CancelCommand => cancelCommand ?? (cancelCommand = new RelayCommand(Undo));
-
-        public CreditCardListViewModel Container => CreditCardListViewModel.Instance();
+        public Action CloseWindow { get; set; }
 
         private void ShowEditDialog()
         {
-            this.Mode = Mode.Edit;
+            Mode = Mode.Edit;
             IOperationWindow dialog = WindowResolver.GetWindow();
             dialog.BindViewModel(this);
             dialog.Show();
         }
 
-        public Action CloseWindow { get; set; }
-
         private void Update()
         {
-            if (this.Mode == Mode.Add)
+            switch (Mode)
             {
-                _creditCardService.AddCreditCard(_creditCardModel);
-                this.Container.CreditCardList = this.Container.GetCreditCards();
+                case Mode.Add:
+                    _creditCardService.AddCreditCard(_creditCardModel);
+                    Container.CreditCardList = Container.GetCreditCards();
+                    break;
+                case Mode.Edit:
+                    _creditCardService.UpdateCreditCard(CardNumber, _creditCardModel);
+                    _originalCardModel = _creditCardModel.Clone();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            else if (this.Mode == Mode.Edit)
-            {
-                _creditCardService.UpdateCreditCard(this.CardNumber, _creditCardModel);
-                _originalCardModel = _creditCardModel.Clone();
-            }
-
             CloseWindow();
         }
 
@@ -108,26 +108,24 @@ namespace ViewModel
         {
             try
             {
-                _creditCardService.DeleteCreditCard(this.CardNumber);
+                _creditCardService.DeleteCreditCard(CardNumber);
+                Container.CreditCardList = Container.GetCreditCards();
             }
             catch (Exception)
             {
                 // ignored
             }
-
-            this.Container.CreditCardList = this.Container.GetCreditCards();
         }
 
         private void Undo()
         {
-            if (this.Mode == Mode.Edit)
+            if (Mode == Mode.Edit)
             {
-                this.CardNumber = _originalCardModel.CardNumber;
-                this.CardType = _originalCardModel.CardType;
-                this.ExpMonth = _originalCardModel.ExpMonth;
-                this.ExpYear = _originalCardModel.ExpYear;
+                CardNumber = _originalCardModel.CardNumber;
+                CardType = _originalCardModel.CardType;
+                ExpMonth = _originalCardModel.ExpMonth;
+                ExpYear = _originalCardModel.ExpYear;
             }
-
             CloseWindow();
         }
     }

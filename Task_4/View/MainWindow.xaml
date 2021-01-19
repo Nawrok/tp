@@ -6,9 +6,9 @@
         Title="MainWindow" Height="400" Width="600">
 
     <Window.DataContext>
-        <vm:CreditCardListViewModel/>
+        <vm:CreditCardListViewModel />
     </Window.DataContext>
-    
+
     <Window.Resources>
         <DataTemplate x:Key="CreditCardListTemplate">
             <v:CreditCardListView />
@@ -18,24 +18,24 @@
                     BorderBrush="Aqua" BorderThickness="1" Padding="8">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Card Number:"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CardNumber}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Card Type:"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CardType}"/>
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Expiration Month:"/>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ExpMonth}"/>
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Expiration Year:"/>
-                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ExpYear}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Card Number:" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CardNumber}" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Card Type:" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CardType}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Expiration Month:" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ExpMonth}" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Expiration Year:" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ExpYear}" />
                 </Grid>
             </Border>
         </DataTemplate>
@@ -54,17 +54,19 @@
 
         <ContentControl Content="{Binding}" ContentTemplate="{StaticResource CreditCardListTemplate}" Grid.Column="1" Grid.Row="0" />
         <TextBlock FontFamily="Verdana" FontSize="11"
-               Margin="5,15,0,5" FontWeight="Bold"  Grid.Column="0" Grid.Row="1">Information:</TextBlock>
+                   Margin="5,15,0,5" FontWeight="Bold" Grid.Column="0" Grid.Row="1">
+            Information:
+        </TextBlock>
         <ContentControl Content="{Binding SelectedCreditCard}" ContentTemplate="{StaticResource DetailTemplate}" Grid.Column="1" Grid.Row="2" />
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="3">
             <Button Content="Edit" Margin="10,0,10,0" Command="{Binding ShowEditCommand}">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="IsEnabled" Value="True"/>
+                        <Setter Property="IsEnabled" Value="True" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding SelectedCreditCard}" Value="False">
-                                <Setter Property="IsEnabled" Value="True"/>
+                                <Setter Property="IsEnabled" Value="True" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -73,10 +75,10 @@
             <Button Content="Delete" Margin="10,0,10,0" Command="{Binding SelectedCreditCard.DeleteCommand}">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="IsEnabled" Value="True"/>
+                        <Setter Property="IsEnabled" Value="True" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding SelectedCreditCard}" Value="False">
-                                <Setter Property="IsEnabled" Value="True"/>
+                                <Setter Property="IsEnabled" Value="True" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

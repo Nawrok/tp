@@ -5,7 +5,7 @@ using ViewModel;
 
 namespace View
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public MainWindow()
         {
@@ -15,7 +15,7 @@ namespace View
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-            CreditCardListViewModel mc = (CreditCardListViewModel)DataContext;
+            CreditCardListViewModel mc = (CreditCardListViewModel) DataContext;
             mc.WindowResolver = new CreditCardDetailsResolver();
         }
     }

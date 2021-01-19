@@ -1,7 +1,6 @@
-﻿using Data;
+﻿using System.Linq;
 using Logic.Tests.Instrumentation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace Logic.Tests
 {

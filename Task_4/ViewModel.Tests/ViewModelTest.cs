@@ -1,6 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using ViewModel;
 
 namespace ViewModel.Tests
 {

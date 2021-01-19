@@ -1,8 +1,8 @@
-﻿using Model;
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
+using Model;
 using ViewModel.Common;
 using ViewModel.Interface;
 
@@ -10,92 +10,67 @@ namespace ViewModel
 {
     public class CreditCardListViewModel : ViewModelBase, IViewModel
     {
-        private static CreditCardListViewModel instance;
+        private static CreditCardListViewModel _instance;
 
-        private CreditCardService _creditCardService = new CreditCardService();
+        private readonly CreditCardService _creditCardService = new CreditCardService();
 
-        private ObservableCollection<CreditCardViewModel> creditCardList;
+        private ObservableCollection<CreditCardViewModel> _creditCardList;
 
-        private CreditCardViewModel selectedCreditCard;
-
-        private ICommand showAddCommand;
-        private ICommand showEditCommand;
-
-        public IWindowResolver WindowResolver { get; set; }
+        private CreditCardViewModel _selectedCreditCard;
 
         public CreditCardListViewModel()
         {
             CreditCardList = GetCreditCards();
         }
 
+        public IWindowResolver WindowResolver { get; set; }
+
         public ObservableCollection<CreditCardViewModel> CreditCardList
         {
             get => GetCreditCards();
             set
             {
-                creditCardList = value;
+                _creditCardList = value;
                 OnPropertyChanged("CreditCardList");
             }
         }
 
         public CreditCardViewModel SelectedCreditCard
         {
-            get => selectedCreditCard;
+            get => _selectedCreditCard;
             set
             {
-                selectedCreditCard = value;
+                _selectedCreditCard = value;
                 OnPropertyChanged("SelectedCreditCard");
             }
         }
 
-        public ICommand ShowAddCommand
-        {
-            get
-            {
-                if (showAddCommand == null)
-                {
-                    showAddCommand = new RelayCommand(ShowAddDialog);
-                }
-
-                return showAddCommand;
-            }
-        }
-
-        public ICommand ShowEditCommand
-        {
-            get
-            {
-                if (showEditCommand == null)
-                {
-                    showEditCommand = new RelayCommand(ShowEditDialog);
-                }
-
-                return showEditCommand;
-            }
-        }
+        private ICommand _showAddCommand;
+        private ICommand _showEditCommand;
+        public ICommand ShowAddCommand => _showAddCommand ?? (_showAddCommand = new RelayCommand(ShowAddDialog));
+        public ICommand ShowEditCommand => _showEditCommand ?? (_showEditCommand = new RelayCommand(ShowEditDialog));
 
         public Action CloseWindow { get; set; }
 
         public static CreditCardListViewModel Instance()
         {
-            if (instance == null)
-            {
-                instance = new CreditCardListViewModel();
-            }
-
-            return instance;
+            return _instance ?? (_instance = new CreditCardListViewModel());
         }
 
         public ObservableCollection<CreditCardViewModel> GetCreditCards()
         {
-            if (creditCardList == null)
-                creditCardList = new ObservableCollection<CreditCardViewModel>();
-            creditCardList.Clear();
+            if (_creditCardList == null)
+            {
+                _creditCardList = new ObservableCollection<CreditCardViewModel>();
+            }
+
+            _creditCardList.Clear();
             foreach (CreditCardViewModel card in _creditCardService.GetAllCreditCards().Select(card => new CreditCardViewModel(card, _creditCardService)))
             {
-                creditCardList.Add(card);
+                _creditCardList.Add(card);
             }
-            return creditCardList;
+
+            return _creditCardList;
         }
 
         private void ShowAddDialog()
@@ -108,15 +83,15 @@ namespace ViewModel
             IOperationWindow dialog = WindowResolver.GetWindow();
             dialog.BindViewModel(card);
             dialog.Show();
-            card.Container.CreditCardList = GetCreditCards();
+            CreditCardViewModel.Container.CreditCardList = GetCreditCards();
         }
 
         private void ShowEditDialog()
         {
-            selectedCreditCard.Mode = Mode.Edit;
+            _selectedCreditCard.Mode = Mode.Edit;
 
             IOperationWindow dialog = WindowResolver.GetWindow();
-            dialog.BindViewModel(selectedCreditCard);
+            dialog.BindViewModel(_selectedCreditCard);
             dialog.Show();
         }
     }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ViewModel.Common;
-
-namespace ViewModel.Interface
+﻿namespace ViewModel.Interface
 {
     public interface IOperationWindow
     {

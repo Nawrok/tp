@@ -1,17 +1,17 @@
-﻿using ViewModel.Common;
-using ViewModel.Interface;
+﻿using ViewModel.Interface;
 
 namespace View.DI
 {
     public class CreditCardDetailsWindow : IOperationWindow
     {
         private readonly CreditCardView _view;
-        public event VoidHandler OnClose;
 
         public CreditCardDetailsWindow()
         {
             _view = new CreditCardView();
         }
+
+        public event VoidHandler OnClose;
 
         public void BindViewModel<T>(T viewModel) where T : IViewModel
         {
