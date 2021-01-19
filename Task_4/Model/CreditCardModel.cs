@@ -4,7 +4,11 @@ namespace Model
 {
     public class CreditCardModel : ICreditCard
     {
-        public CreditCardModel() { }
+        public CreditCardModel()
+        {
+            CardNumber = "";
+            CardType = "";
+        }
 
         public CreditCardModel(ICreditCard creditCard)
         {
