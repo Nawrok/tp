@@ -12,7 +12,7 @@ namespace ViewModel
     {
         private static CreditCardListViewModel _instance;
 
-        private readonly CreditCardService _creditCardService;
+        private static CreditCardService _creditCardService;
 
         private ObservableCollection<CreditCardViewModel> _creditCardList;
 
@@ -58,7 +58,7 @@ namespace ViewModel
 
         public static CreditCardListViewModel Instance()
         {
-            return _instance ?? (_instance = new CreditCardListViewModel());
+            return _instance ?? (_instance = new CreditCardListViewModel(_creditCardService));
         }
 
         public ObservableCollection<CreditCardViewModel> GetCreditCards()
