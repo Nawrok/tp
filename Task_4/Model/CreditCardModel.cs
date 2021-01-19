@@ -18,5 +18,16 @@ namespace Model
         public string CardType { get; set; }
         public byte ExpMonth { get; set; }
         public short ExpYear { get; set; }
+
+        public CreditCardModel Clone()
+        {
+            return new CreditCardModel
+            {
+                CardNumber = CardNumber,
+                CardType = CardType,
+                ExpMonth = ExpMonth,
+                ExpYear = ExpYear
+            };
+        }
     }
 }

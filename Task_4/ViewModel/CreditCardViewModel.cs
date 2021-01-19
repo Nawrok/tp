@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using Data;
 using Model;
 using ViewModel.Common;
 using ViewModel.Interface;
@@ -9,8 +10,8 @@ namespace ViewModel
     public class CreditCardViewModel : ViewModelBase, IViewModel
     {
         private CreditCardModel _creditCardModel;
+        private CreditCardModel _originalCardModel;
         private CreditCardService _creditCardService;
-        private CreditCardViewModel _originalValue;
 
         public IWindowResolver WindowResolver { get; set; }
 
@@ -67,14 +68,11 @@ namespace ViewModel
         public CreditCardViewModel(CreditCardModel creditCardModel, CreditCardService creditCardService)
         {
             _creditCardModel = creditCardModel;
+            _originalCardModel = creditCardModel.Clone();
             _creditCardService = creditCardService;
         }
 
-        public CreditCardViewModel()
-        {
-            _creditCardModel = new CreditCardModel();
-            _creditCardService = new CreditCardService();
-        }
+        public CreditCardViewModel() : this(new CreditCardModel(), new CreditCardService()) { }
 
         public ICommand CancelCommand => cancelCommand ?? (cancelCommand = new RelayCommand(Undo));
 
@@ -92,41 +90,44 @@ namespace ViewModel
 
         private void Update()
         {
-            CreditCardModel card = new CreditCardModel
-            {
-                CardNumber = this.CardNumber,
-                CardType = this.CardType,
-                ExpMonth = this.ExpMonth,
-                ExpYear = this.ExpYear
-            };
             if (this.Mode == Mode.Add)
             {
-                _creditCardService.AddCreditCard(card);
+                _creditCardService.AddCreditCard(_creditCardModel);
                 this.Container.CreditCardList = this.Container.GetCreditCards();
             }
-            else if(this.Mode == Mode.Edit)
+            else if (this.Mode == Mode.Edit)
             {
-                _creditCardService.UpdateCreditCard(this.CardNumber, card);
-                this._originalValue = (CreditCardViewModel)this.MemberwiseClone();
+                _creditCardService.UpdateCreditCard(this.CardNumber, _creditCardModel);
+                _originalCardModel = _creditCardModel.Clone();
             }
+
             CloseWindow();
         }
 
         private void Delete()
         {
-            _creditCardService.DeleteCreditCard(this.CardNumber);
+            try
+            {
+                _creditCardService.DeleteCreditCard(this.CardNumber);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
             this.Container.CreditCardList = this.Container.GetCreditCards();
         }
 
         private void Undo()
         {
-            if(this.Mode == Mode.Edit)
+            if (this.Mode == Mode.Edit)
             {
-                this.CardNumber = _originalValue.CardNumber;
-                this.CardType = _originalValue.CardType;
-                this.ExpMonth = _originalValue.ExpMonth;
-                this.ExpYear = _originalValue.ExpYear;
+                this.CardNumber = _originalCardModel.CardNumber;
+                this.CardType = _originalCardModel.CardType;
+                this.ExpMonth = _originalCardModel.ExpMonth;
+                this.ExpYear = _originalCardModel.ExpYear;
             }
+
             CloseWindow();
         }
     }
