@@ -6,7 +6,7 @@ using Data;
 
 namespace Logic.Tests.Instrumentation
 {
-    internal class InMemoryDataRepository : IDataRepository
+    public class InMemoryDataRepository : IDataRepository
     {
         private static int _count;
         private readonly Dictionary<int, Data.CreditCard> _context = new Dictionary<int, Data.CreditCard>();

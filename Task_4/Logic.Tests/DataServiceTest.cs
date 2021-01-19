@@ -9,7 +9,7 @@ namespace Logic.Tests
     public class DataServiceTest
     {
         private CreditCard _creditCard;
-        private DataService _dataService;
+        private IDataService _dataService;
 
         [TestInitialize]
         public void TestInitialize()

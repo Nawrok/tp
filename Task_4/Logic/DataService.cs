@@ -5,7 +5,7 @@ using Data;
 
 namespace Logic
 {
-    public class DataService
+    public class DataService : IDataService
     {
         private readonly IDataRepository _dataRepository;
 

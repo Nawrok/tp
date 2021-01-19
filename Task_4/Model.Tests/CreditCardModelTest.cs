@@ -6,7 +6,7 @@ namespace Model.Tests
     [TestClass]
     public class CreditCardModelTest
     {
-        private CreditCardModel _card1;
+        private readonly CreditCardModel _card1 = null;
         private CreditCardModel _card2;
 
         [TestInitialize]

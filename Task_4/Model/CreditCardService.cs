@@ -6,16 +6,16 @@ namespace Model
 {
     public class CreditCardService
     {
-        private readonly DataService _dataService;
+        private readonly IDataService _dataService;
 
         public CreditCardService()
         {
             _dataService = new DataService();
         }
 
-        public CreditCardService(DataService dataService)
+        public CreditCardService(IDataService service)
         {
-            _dataService = dataService;
+            _dataService = service;
         }
 
         public void AddCreditCard(CreditCardModel creditCard)
