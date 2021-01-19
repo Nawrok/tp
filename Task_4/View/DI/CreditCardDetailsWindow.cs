@@ -1,10 +1,11 @@
-﻿using ViewModel.Interface;
+﻿using ViewModel.Common;
+using ViewModel.Interface;
 
 namespace View.DI
 {
     public class CreditCardDetailsWindow : IOperationWindow
     {
-        private CreditCardView _view;
+        private readonly CreditCardView _view;
         public event VoidHandler OnClose;
 
         public CreditCardDetailsWindow()
@@ -15,6 +16,11 @@ namespace View.DI
         public void BindViewModel<T>(T viewModel) where T : IViewModel
         {
             _view.DataContext = viewModel;
+            viewModel.CloseWindow = () =>
+            {
+                OnClose?.Invoke();
+                _view.Close();
+            };
         }
 
         public void Show()

@@ -54,14 +54,14 @@
 
         <ContentControl Content="{Binding}" ContentTemplate="{StaticResource CreditCardListTemplate}" Grid.Column="1" Grid.Row="0" />
         <TextBlock FontFamily="Verdana" FontSize="11"
-               Margin="5,15,0,5" FontWeight="Bold"  Grid.Column="1" Grid.Row="1">Information:</TextBlock>
+               Margin="5,15,0,5" FontWeight="Bold"  Grid.Column="0" Grid.Row="1">Information:</TextBlock>
         <ContentControl Content="{Binding SelectedCreditCard}" ContentTemplate="{StaticResource DetailTemplate}" Grid.Column="1" Grid.Row="2" />
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="3">
-            <Button Content="Edit" Margin="10,0,10,0" Command="{Binding ShowEditCommand}"/>
-                <!--<Button.Style>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="3">
+            <Button Content="Edit" Margin="10,0,10,0" Command="{Binding ShowEditCommand}">
+                <Button.Style>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="IsEnabled" Value="False"/>
+                        <Setter Property="IsEnabled" Value="True"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding SelectedCreditCard}" Value="False">
                                 <Setter Property="IsEnabled" Value="True"/>
@@ -69,11 +69,11 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-            </Button>-->
-            <Button Content="Delete" Margin="10,0,10,0" Command="{Binding SelectedCreditCard.DeleteCommand}"/>
-                <!--<Button.Style>
+            </Button>
+            <Button Content="Delete" Margin="10,0,10,0" Command="{Binding SelectedCreditCard.DeleteCommand}">
+                <Button.Style>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="IsEnabled" Value="False"/>
+                        <Setter Property="IsEnabled" Value="True"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding SelectedCreditCard}" Value="False">
                                 <Setter Property="IsEnabled" Value="True"/>
@@ -81,7 +81,7 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-            </Button>-->
+            </Button>
         </StackPanel>
     </Grid>
 </Window>
