@@ -53,7 +53,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <ContentControl Content="{Binding}" ContentTemplate="{StaticResource CreditCardListTemplate}" Grid.Column="0" Grid.Row="0"/>
+        <ContentControl Content="{Binding}" ContentTemplate="{StaticResource CreditCardListTemplate}" Grid.Column="0" Grid.Row="0" />
         <TextBlock TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Verdana" FontSize="11"
                    Margin="5,15,0,5" FontWeight="Bold" Grid.Column="0" Grid.Row="1">
             Information:
@@ -63,7 +63,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="3">
             <Button Content="Edit" Margin="10,0,10,0" Command="{Binding ShowEditCommand}">
                 <Button.Resources>
-                    <cv:NullConverter x:Key="NullConverter"/>
+                    <cv:NullConverter x:Key="NullConverter" />
                 </Button.Resources>
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
@@ -78,7 +78,7 @@
             </Button>
             <Button Content="Delete" Margin="10,0,10,0" Command="{Binding SelectedCreditCard.DeleteCommand}">
                 <Button.Resources>
-                    <cv:NullConverter x:Key="NullConverter"/>
+                    <cv:NullConverter x:Key="NullConverter" />
                 </Button.Resources>
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">

@@ -18,8 +18,9 @@ namespace ViewModel.Common
         #endregion
 
         #region constructors
+
         public RelayCommand(Action execute) : this(execute, null) { }
-        
+
         public RelayCommand(Action execute, Func<bool> canExecute)
         {
             _mExecute = execute ?? throw new ArgumentNullException(nameof(execute));
@@ -29,15 +30,17 @@ namespace ViewModel.Common
         #endregion
 
         #region ICommand
+
         public bool CanExecute(object parameter)
         {
             return _mCanExecute == null || _mCanExecute();
         }
-        
+
         public virtual void Execute(object parameter)
         {
             _mExecute();
         }
+
         public event EventHandler CanExecuteChanged;
 
         #endregion

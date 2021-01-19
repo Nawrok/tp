@@ -2,7 +2,7 @@
 
 namespace Logic
 {
-    public interface IDataService
+    public interface ICreditCardService
     {
         void AddCreditCard(ICreditCard creditCard);
         ICreditCard GetCreditCard(string cardNumber);

@@ -10,12 +10,14 @@ namespace ViewModel
     {
         private readonly CreditCardModel _creditCardModel;
         private readonly CreditCardService _creditCardService;
-        private CreditCardModel _originalCardModel;
-        
+
         private ICommand _cancelCommand;
         private ICommand _deleteCommand;
+        private CreditCardModel _originalCardModel;
         private ICommand _showEditCommand;
         private ICommand _updateCommand;
+
+        public CreditCardViewModel() : this(new CreditCardModel(), new CreditCardService()) { }
 
         public CreditCardViewModel(CreditCardModel creditCardModel, CreditCardService creditCardService)
         {
@@ -23,8 +25,6 @@ namespace ViewModel
             _originalCardModel = creditCardModel.Clone();
             _creditCardService = creditCardService;
         }
-
-        public CreditCardViewModel() : this(new CreditCardModel(), new CreditCardService()) { }
 
         private IWindowResolver WindowResolver { get; set; }
 
@@ -101,6 +101,7 @@ namespace ViewModel
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             CloseWindow();
         }
 
@@ -109,12 +110,13 @@ namespace ViewModel
             try
             {
                 _creditCardService.DeleteCreditCard(CardNumber);
-                Container.CreditCardList = Container.GetCreditCards();
             }
             catch (Exception)
             {
                 // ignored
             }
+
+            Container.CreditCardList = Container.GetCreditCards();
         }
 
         private void Undo()
@@ -126,6 +128,7 @@ namespace ViewModel
                 ExpMonth = _originalCardModel.ExpMonth;
                 ExpYear = _originalCardModel.ExpYear;
             }
+
             CloseWindow();
         }
     }

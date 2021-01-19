@@ -49,18 +49,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataServiceTest.cs" />
-    <Compile Include="Instrumentation\InMemoryDataRepository.cs" />
+    <Compile Include="CreditCardServiceTest.cs" />
+    <Compile Include="Instrumentation\InMemoryCreditCardService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj">
-      <Project>{ef0cd64e-82e2-4e61-8cc6-d92485a435c7}</Project>
-      <Name>Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Logic\Logic.csproj">
       <Project>{e77d909c-cd92-42d6-89f0-6690ef67c65d}</Project>
       <Name>Logic</Name>

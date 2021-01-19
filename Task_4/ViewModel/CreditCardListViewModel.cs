@@ -12,14 +12,20 @@ namespace ViewModel
     {
         private static CreditCardListViewModel _instance;
 
-        private readonly CreditCardService _creditCardService = new CreditCardService();
+        private readonly CreditCardService _creditCardService;
 
         private ObservableCollection<CreditCardViewModel> _creditCardList;
 
         private CreditCardViewModel _selectedCreditCard;
 
-        public CreditCardListViewModel()
+        private ICommand _showAddCommand;
+        private ICommand _showEditCommand;
+
+        public CreditCardListViewModel() : this(new CreditCardService()) { }
+
+        public CreditCardListViewModel(CreditCardService creditCardService)
         {
+            _creditCardService = creditCardService;
             CreditCardList = GetCreditCards();
         }
 
@@ -45,8 +51,6 @@ namespace ViewModel
             }
         }
 
-        private ICommand _showAddCommand;
-        private ICommand _showEditCommand;
         public ICommand ShowAddCommand => _showAddCommand ?? (_showAddCommand = new RelayCommand(ShowAddDialog));
         public ICommand ShowEditCommand => _showEditCommand ?? (_showEditCommand = new RelayCommand(ShowEditDialog));
 

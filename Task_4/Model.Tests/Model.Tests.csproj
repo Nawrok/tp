@@ -50,12 +50,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CreditCardModelTest.cs" />
+    <Compile Include="CreditCardServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Logic.Tests\Logic.Tests.csproj">
+      <Project>{dd12d238-9361-4043-8dd6-2fb4b8f8e67b}</Project>
+      <Name>Logic.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logic\Logic.csproj">
+      <Project>{e77d909c-cd92-42d6-89f0-6690ef67c65d}</Project>
+      <Name>Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{710a21b5-f011-4fb2-92d2-13fdd76b19c6}</Project>
       <Name>Model</Name>

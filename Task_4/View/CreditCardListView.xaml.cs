@@ -9,9 +9,6 @@ namespace View
             InitializeComponent();
         }
 
-        private void ListView_SelectionChanged()
-        {
-
-        }
+        private void ListView_SelectionChanged() { }
     }
 }

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="AdventureWorks2019" Class="SalesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=JASZCZOMPV2;Initial Catalog=AdventureWorks2019;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False" SettingsObjectName="Data.Properties.Settings" SettingsPropertyName="AdventureWorks2019ConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=NAWROK-LAPTOP;Initial Catalog=AdventureWorks2019;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False" 
+              SettingsObjectName="Data.Properties.Settings" SettingsPropertyName="AdventureWorks2019ConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="Sales.CreditCard" Member="CreditCard">
     <Type Name="CreditCard">
       <Column Name="CreditCardID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
