@@ -6,13 +6,11 @@
 
     <StackPanel>
         <Button Content="Add Credit Card" Width="90" HorizontalAlignment="Center" Margin="10 10 0 10" Command="{Binding ShowAddCommand}" />
-        <ListView Height="100" ItemsSource="{Binding CreditCardList}" SelectedItem="{Binding SelectedCreditCard}">
+        <ListView Width="Auto" Height="200" ItemsSource="{Binding CreditCardList}" SelectedItem="{Binding SelectedCreditCard}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Card Number" DisplayMemberBinding="{Binding CardNumber}" Width="100" />
-                    <GridViewColumn Header="Card Type" DisplayMemberBinding="{Binding CardType}" Width="100" />
-                    <GridViewColumn Header="Expiration Month" DisplayMemberBinding="{Binding ExpMonth}" Width="100" />
-                    <GridViewColumn Header="Expiration Year" DisplayMemberBinding="{Binding ExpYear}" Width="100" />
+                    <GridViewColumn Header="Card Number" DisplayMemberBinding="{Binding CardNumber}" Width="125" />
+                    <GridViewColumn Header="Card Type" DisplayMemberBinding="{Binding CardType}" Width="110" />
                 </GridView>
             </ListView.View>
         </ListView>

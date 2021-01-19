@@ -66,6 +66,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\NullConverter.cs" />
     <Compile Include="DI\CreditCardDetailsResolver.cs" />
     <Compile Include="DI\CreditCardDetailsWindow.cs" />
     <Compile Include="MainWindow.xaml.cs">
