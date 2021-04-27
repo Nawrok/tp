@@ -1,8 +1,19 @@
-# Programming Technology Lab
+# Software Development Technologies (Technical University of Lodz)
 
-## Team
+## Course overview
+- Syntax and semantics of the selected C# constructs, and particularly: generic types and methods, program metadata (reflection and attributes), type extensions, anonymous functions,  LINQ, and parallel programming
+- C# constructs and related MS Visual Studio development tools should be used to test the program, including development and application of unit tests
+- Selected solution patterns, including: caching, cryptography, data access and serialization, exception handling, logging, security, dependency injection, unity, validation, etc.
+- Practical applying of the selected C# constructs in the developed application for the selected pattern to obtain the expected interaction between the program and .NET and external environments
+- Selecting and using test methods and available tools with the aim of increasing overall software quality and internal integrity
+- Selecting and implementing a solution pattern in the .NET environment and will be able to analyze and present differences between available options
 
-| Name Surname            | GUID                                     |
-| ----------------------- | ---------------------------------------- |
-| Sebastian Nawrocki      | `{281A578F-6245-481E-95FB-0F6EE230FA2A}` |
-| Maciej Błażewicz        | `{F423538F-E485-4C6B-B1E9-3070ADF4AA24}` |
+## Lab exercises (using C#)
+- Store API with Dependency Injection
+- Serialization
+- ORM (LINQ to SQL)
+- Graphical Interface with MVVM using WPF
+
+## Authors
+- Sebastian Nawrocki
+- Maciej Błażewicz
